@@ -713,7 +713,7 @@ class mf_passkeys
 
 	function include_vue_adminarea_file(string $template, ?array $data = [], bool $load = false)
 	{
-		$file = realpath(SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/admin/vue/'.$template.'.php');
+		$file = realpath(SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/admin/'.$template.'.php');
 
 		if(file_exists(realpath($file)))
 		{
@@ -915,7 +915,7 @@ class mf_passkeys
 		]);
 		wp_enqueue_script('secure-passkeys-login-script');
 
-		return $this->include_view_frontend_file('login.default');
+		return $this->include_view_frontend_file('login');
 	}
 
 	function check_is_admin_request(): bool
@@ -989,7 +989,7 @@ class mf_passkeys
 
 	function get_frontend_themes_paths()
 	{
-		return ['default' => SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/frontend/default'];
+		return ['default' => SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/frontend'];
 	}
 
 	function get_js_frontend_assets_url(string $file_name)

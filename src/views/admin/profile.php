@@ -121,39 +121,6 @@ defined('ABSPATH') || exit;
 										<span v-if="deletingPasskey && deletingId == item.id">
 											{{ i18n.deleting }}
 										</span>
-
-										<!--<template v-if="!is_owner && has_access">
-											|
-											<a
-											href="#"
-											@click.prevent="activateDeactivatePasskey(item.id, false)"
-											v-if="!item.is_active && !actionProcessing"
-											>
-											<?php echo __("Activate", 'lang_passkeys'); ?>
-											</a>
-											<a
-											href="#"
-											@click.prevent="activateDeactivatePasskey(item.id, true)"
-											v-if="item.is_active && !actionProcessing"
-											>
-											<?php echo __("Deactivate", 'lang_passkeys'); ?>
-											</a>
-											<span
-											v-if="actionProcessing && actionProcessingId == item.id"
-											>
-											<?php echo __("Processing...", 'lang_passkeys'); ?>
-											</span>
-											<span
-											v-if="actionProcessing && actionProcessingId != item.id"
-											>
-											<template v-if="!item.is_active">
-												<?php echo __("Activate", 'lang_passkeys'); ?>
-											</template>
-											<template v-else>
-												<?php echo __("Deactivate", 'lang_passkeys'); ?>
-											</template>
-											</span>
-										</template>-->
 									</td>
 								</tr>
 								<tr v-if="list.length == 0 && !isLoading">
