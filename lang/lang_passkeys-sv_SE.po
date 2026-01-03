@@ -1,0 +1,667 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-03 08:12+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Martin Fors\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: sv_SE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: esc_html__;esc_html_e;esc_attr__;esc_attr_e;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../include/classes.php:665
+msgid "You do not have permission to make this request"
+msgstr "Du har inte behörighet att utföra detta"
+
+#: ../include/classes.php:678
+#: ../include/classes.php:945
+msgid "The request method must be POST"
+msgstr "Hämtningsmetoden behöver vara med POST"
+
+#: ../include/classes.php:683
+#: ../include/classes.php:950
+msgid "Token mismatch, please refresh the page"
+msgstr "Något gick fel. Var vänlig ladda om sidan"
+
+#: ../include/classes.php:783
+#: ../include/classes.php:852
+msgid "Are you sure you want to delete the passkey?"
+msgstr "Är du säker på att du vill radera lösenordsnyckeln?"
+
+#: ../include/classes.php:784
+#: ../include/classes.php:853
+msgid "Are you sure you want to activate the passkey?"
+msgstr "Är du säker på att du vill aktivera lösenordsnyckeln?"
+
+#: ../include/classes.php:785
+#: ../include/classes.php:854
+msgid "Are you sure you want to deactivate the passkey?"
+msgstr "Är du säker på att du vill inaktivera lösenordsnyckeln?"
+
+#: ../include/classes.php:838
+msgid "Passwordless sign-in with passkeys"
+msgstr "Lösenordsfri inloggning med lösenordsnycklar"
+
+#: ../include/classes.php:839
+msgid "Passkeys offer a secure and user-friendly authentication method, serving as an alternative or complement to traditional methods. They validate your identity through touch, facial recognition, device passwords, or PINs, and can effectively replace passwords."
+msgstr "Lösenordsnycklar erbjuder en säker och användarvänlig autentiseringsmetod, som fungerar som ett alternativ eller komplement till traditionella metoder. Den validerar din identitet genom beröring, ansiktsigenkänning, enhetslösenord eller PIN-koder, och kan effektivt ersätta lösenord."
+
+#: ../include/classes.php:840
+msgid "Domain"
+msgstr "Domän"
+
+#: ../include/classes.php:841
+msgid "Last Used"
+msgstr "Senast använd"
+
+#: ../include/classes.php:842
+msgid "Created Date"
+msgstr "Skapad"
+
+#: ../include/classes.php:843
+msgid "Actions"
+msgstr "Åtgärder"
+
+#: ../include/classes.php:844
+msgid "Activate"
+msgstr "Aktivera"
+
+#: ../include/classes.php:845
+msgid "Deactivate"
+msgstr "Inaktivera"
+
+#: ../include/classes.php:846
+msgid "Delete"
+msgstr "Radera"
+
+#: ../include/classes.php:847
+msgid "Processing..."
+msgstr "Bearbetar..."
+
+#: ../include/classes.php:848
+msgid "Deleting..."
+msgstr "Raderar..."
+
+#: ../include/classes.php:849
+msgid "No records found."
+msgstr "Inga händelser hittade"
+
+#: ../include/classes.php:850
+msgid "Loading passkeys..."
+msgstr "Laddar lösenordsnycklar..."
+
+#: ../include/classes.php:851
+msgid "An unexpected error occurred."
+msgstr "Ett oväntat fel inträffade"
+
+#: ../include/classes.php:855
+msgid "Failed to fetch passkeys."
+msgstr "Jag kunde inte hämta nycklar"
+
+#: ../include/classes.php:857
+msgid "out of"
+msgstr "av"
+
+#: ../include/classes.php:858
+msgid "Add Passkey"
+msgstr "Lägg till lösenordsnyckel"
+
+#: ../include/classes.php:859
+msgid "Add"
+msgstr "Lägg till"
+
+#: ../include/classes.php:860
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: ../include/classes.php:861
+msgid "Your Passkeys"
+msgstr "Dina lösenordsnycklar"
+
+#: ../include/classes.php:862
+msgid "User Passkeys"
+msgstr "Användarnycklar"
+
+#: ../include/classes.php:863
+msgid "Waiting for input from browser interaction..."
+msgstr "Jag väntar på svar från webbläsaren..."
+
+#: ../include/classes.php:864
+msgid "Added"
+msgstr "Tillagd"
+
+#: ../include/classes.php:865
+msgid "Last used"
+msgstr "Senast använd"
+
+#: ../include/classes.php:866
+msgid "Name your security key"
+msgstr "Ge ett namn till din nyckel"
+
+#: ../include/classes.php:867
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: ../include/classes.php:868
+msgid "Active"
+msgstr "Aktiv"
+
+#: ../include/classes.php:869
+#: ../include/classes.php:913
+msgid "Your browser does not support passkeys. Try updating your browser or using another one."
+msgstr "Din webbläsare har inte stöd för lösenordsnycklar"
+
+#: ../include/classes.php:870
+msgid "An error occurred while loading passkeys."
+msgstr "Ett fel inträffade vid laddning av lösenordsnycklar"
+
+#: ../include/classes.php:871
+msgid "Passkey registration failed or cancelled."
+msgstr "Registrering av lösenordsnyckel gick fel eller avbröts"
+
+#: ../include/classes.php:872
+msgid "The security key name must be between 3 and 30 characters long."
+msgstr ""
+
+#: ../include/classes.php:873
+msgid "You already registered this device. You don't have to register it again."
+msgstr "Du har redan registrerat denna enhet så du behöver inte göra det igen"
+
+#: ../include/classes.php:875
+msgid "Passkey registration cancelled. Please try again if you want to proceed."
+msgstr "Registreringen av lösenordsnyckel avbröts"
+
+#: ../include/classes.php:876
+msgid "Are you sure you want to delete your passkey?"
+msgstr "Är du säker på att du vill radera lösenordsnyckeln?"
+
+#: ../include/classes.php:877
+msgid "Passkey successfully deleted."
+msgstr "Lösenordsnyckeln raderades"
+
+#: ../include/classes.php:878
+msgid "Failed to fetch passkey registration options."
+msgstr "Jag kunde inte hämta alternativen för registrering av lösenordsnycklar"
+
+#: ../include/classes.php:879
+msgid "An error occurred while saving the passkey."
+msgstr "Ett fel inträffade när lösenordsnyckeln skulle sparas"
+
+#: ../include/classes.php:880
+msgid "Please use only letters, numbers, spaces, hyphens, or underscores."
+msgstr ""
+
+#: ../include/classes.php:881
+msgid "Passkey successfully added"
+msgstr "Lösenordsnyckeln lades till"
+
+#: ../include/classes.php:882
+msgid "No passkeys found"
+msgstr "Inga lösenordsnycklar hittades"
+
+#: ../include/classes.php:914
+msgid "Failed to fetch passkey login options."
+msgstr "Jag misslyckades med att hämta inloggningsinställningar"
+
+#: ../include/classes.php:915
+msgid "Passkey authentication failed. Please try again if you want to proceed."
+msgstr "Autenticering av lösenordsnyckel misslyckades"
+
+#: ../include/classes.php:916
+msgid "Passkey authentication cancelled. Please try again if you want to proceed."
+msgstr "Autenticering av lösenordsnyckeln avbröts"
+
+#: ../include/classes.php:917
+msgid "You have successfully logged in with Passkey. Redirecting..."
+msgstr "Inloggningen med lösenordsnyckel lyckades. Du skickas vidare..."
+
+#: ../include/classes.php:1064
+#: ../include/classes.php:1073
+msgid "The passkey cannot be deleted"
+msgstr "Lösenordsnyckeln kan inte raderas"
+
+#: ../include/classes.php:1089
+msgid "The passkey deleted successfully"
+msgstr "Lösenordsnyckeln raderades"
+
+#: ../include/classes.php:1107
+msgid "This Site"
+msgstr "Denna webbplats"
+
+#: ../include/classes.php:1158
+msgid "Passkey authentication failed. Please try again."
+msgstr "Autenticering misslyckades. Försök igen."
+
+#: ../include/classes.php:1237
+msgid "This passkey is already registered. Please use a different one."
+msgstr "Lösenordsnyckeln är redan registrerad."
+
+#: ../include/classes.php:1242
+#: ../include/classes.php:1260
+msgid "Failed to register the passkey. Please try again later."
+msgstr "Registreringen misslyckades. Försök igen senare."
+
+#: ../include/classes.php:1295
+msgid "You do not have permission to remove this passkey."
+msgstr "Du har inte behörighet att radera denna lösenordsnyckel"
+
+#: ../include/classes.php:1339
+msgid "Passkeys"
+msgstr "Lösenordsnycklar"
+
+#: ../include/classes.php:1365
+msgid "Activated"
+msgstr "Aktiverade"
+
+#: ../include/classes.php:1374
+msgid "Deactivated"
+msgstr "Inaktiverade"
+
+#: ../include/classes.php:1396
+#, php-format
+msgid "%sUse your fingerprint or other biometric methods with passkeys to securely and conveniently verify your login. %s in your profile settings."
+msgstr "%sAnvänd ditt fingeravtryck eller andra biometriska metoder med lösenordsnycklar för att logga in säkert och snabbt. %s i din profil."
+
+#: ../include/classes.php:1396
+msgid "Simplify your sign-in"
+msgstr "Förenkla din inloggning"
+
+#: ../include/classes.php:1396
+msgid "Enable passkeys"
+msgstr "Aktivera lösenordsnycklar"
+
+#: ../src/views/frontend/default/login.default.php:14
+msgid "Login via Passkey..."
+msgstr "Loggar in med lösenordsnyckel..."
+
+#: ../src/views/frontend/default/login.default.php:15
+msgid "Login via Passkey"
+msgstr "Logga in med lösenordsnyckel"
+
+#~ msgid "Login"
+#~ msgstr "Inloggning"
+
+#~ msgid "Register"
+#~ msgstr "Registrera"
+
+#~ msgid "Remove"
+#~ msgstr "Radera"
+
+#~ msgid "The request method must be POST."
+#~ msgstr "Hämtningsmetoden behöver vara med POST"
+
+#~ msgid "You are not allowed to make this request"
+#~ msgstr "Du har inte behörighet att utföra detta"
+
+#~ msgid "Invalid procedure"
+#~ msgstr "Felaktig procedur"
+
+#~ msgid "A passkey cannot be updated"
+#~ msgstr "Lösenordsnyckeln kan inte uppdateras"
+
+#~ msgid "The passkey activated successfully"
+#~ msgstr "Lösenordsnyckeln aktiverades"
+
+#~ msgid "The passkey deactivated successfully"
+#~ msgstr "Lösenordsnyckeln inaktiverades"
+
+#~ msgid "Secure Passkeys"
+#~ msgstr "Lösenordsnycklar"
+
+#~ msgid "Overview"
+#~ msgstr "Översikt"
+
+#~ msgid "Activity Log"
+#~ msgstr "Aktivitetslogg"
+
+#~ msgid "Default"
+#~ msgstr "Standard"
+
+#~ msgid ""
+#~ "View a detailed log of passkeys created by users, including timestamps "
+#~ "and relevant activity history for better security monitoring."
+#~ msgstr ""
+#~ "Se en detaljerad logg över lösenordsnycklar skapade av användare, "
+#~ "inklusive tidsstämplar och relevant aktivitetshistorik för bättre "
+#~ "säkerhetsövervakning."
+
+#~ msgid "User"
+#~ msgstr "Användare"
+
+#~ msgid "User ID, Name, or Email"
+#~ msgstr "Användar-ID, namn eller e-post"
+
+#~ msgid "Action"
+#~ msgstr "Åtgärd"
+
+#~ msgid "Any"
+#~ msgstr "Vilken som helst"
+
+#~ msgid "Action By"
+#~ msgstr "Åtgärd av"
+
+#~ msgid "IP Address"
+#~ msgstr "IP-adress"
+
+#~ msgid "Reset"
+#~ msgstr "Återställ"
+
+#~ msgid "Count"
+#~ msgstr "Antal"
+
+#~ msgid "Description"
+#~ msgstr "Beskrivning"
+
+#~ msgid "User ID"
+#~ msgstr "Användar-ID"
+
+#~ msgid ""
+#~ "Secure Passkeys is a passwordless authentication solution based on "
+#~ "WebAuthn, enabling users to log in using device-based methods like "
+#~ "biometrics or PIN. It eliminates the need for traditional passwords, "
+#~ "enhancing security and upgrading your WordPress site with Secure Passkeys "
+#~ "for a modern, secure, and efficient authentication experience."
+#~ msgstr ""
+#~ "Lösenordsnycklar är en lösenordslös autentiseringslösning baserad på "
+#~ "WebAuthn som gör det möjligt för användare att logga in med "
+#~ "enhetsbaserade metoder som biometri eller PIN-kod. Det eliminerar behovet "
+#~ "av traditionella lösenord, ökar säkerheten och uppgraderar din WordPress-"
+#~ "sida med lösenordsnycklar för en modern, säker och effektiv "
+#~ "autentiseringsupplevelse."
+
+#~ msgid "Statistics"
+#~ msgstr "Statistik"
+
+#~ msgid "Users"
+#~ msgstr "Användare"
+
+#~ msgid "Activities"
+#~ msgstr "Aktiviteter"
+
+#~ msgid "Challenges"
+#~ msgstr "Test"
+
+#~ msgid "Overview of Authenticators"
+#~ msgstr "Översikt av autentiserare"
+
+#~ msgid "No authenticators registered."
+#~ msgstr "Inga autentiserare registrerade"
+
+#~ msgid "Last Login Activity"
+#~ msgstr "Senaste inloggningsaktivitet"
+
+#~ msgid "No activities."
+#~ msgstr "Inga aktiviteter"
+
+#~ msgid "See the list of passkeys that users have created."
+#~ msgstr "Se listan med lösenordsnycklar som användare har skapat"
+
+#~ msgid "Authenticator"
+#~ msgstr "Autentiserare"
+
+#~ msgid "Last Used Date"
+#~ msgstr "Senast använd"
+
+#~ msgid "Security Key Name"
+#~ msgstr "Nyckelnamn"
+
+#~ msgid "records"
+#~ msgstr "antal"
+
+#~ msgid "Page"
+#~ msgstr "Sida"
+
+#~ msgid "of"
+#~ msgstr "av"
+
+#~ msgid "Previous page"
+#~ msgstr "Föregående sida"
+
+#~ msgid "Settings updated successfully."
+#~ msgstr "Inställningarna uppdaterades"
+
+#~ msgid "Settings"
+#~ msgstr "Inställningar"
+
+#~ msgid "The theme does not exist."
+#~ msgstr "Temat finns inte"
+
+#~ msgid "Invalid settings"
+#~ msgstr "Felaktiga inställningar"
+
+#~ msgid "The registration timeout must be greater than 0."
+#~ msgstr "Timeout för registrering behöver vara större än 0"
+
+#~ msgid "The login timeout must be greater than 0."
+#~ msgstr "Timeout för inloggning behöver vara större än 0"
+
+#~ msgid "General Settings"
+#~ msgstr "Allmänna inställningar"
+
+#~ msgid "Display Settings"
+#~ msgstr "Visa inställningar"
+
+#~ msgid "Advanced Settings"
+#~ msgstr "Avancerade inställningar"
+
+#~ msgid "Never"
+#~ msgstr "Aldrig"
+
+#~ msgid "Older than"
+#~ msgstr "Äldre än"
+
+#~ msgid "days"
+#~ msgstr "dagar"
+
+#~ msgid "Save Changes"
+#~ msgstr "Spara ändringar"
+
+#~ msgid "Saving..."
+#~ msgstr "Sparar..."
+
+#~ msgid "Registration Timeout"
+#~ msgstr "Timeout för registrering"
+
+#~ msgid "Login Timeout"
+#~ msgstr "Timeout för inloggning"
+
+#~ msgid "Passwordless Secure Passkeys"
+#~ msgstr "Lösenordsfri sä"
+
+#~ msgid "Ask me anything"
+#~ msgstr "Fråga mig vad som helst"
+
+#~ msgid "AI Queries"
+#~ msgstr "AI-frågor"
+
+#~ msgid "AI Query"
+#~ msgstr "AI-fråga"
+
+#~ msgid "List"
+#~ msgstr "Lista"
+
+#~ msgid "Edit"
+#~ msgstr "Redigera"
+
+#~ msgid "View"
+#~ msgstr "Visa"
+
+#~ msgid "API Key"
+#~ msgstr "API-nyckel"
+
+#~ msgid "Run"
+#~ msgstr "Kör"
+
+#~ msgid "There were no API keys"
+#~ msgstr "Det finns inga API-nycklar"
+
+#~ msgid "Log in to display this"
+#~ msgstr "Logga in för att visa detta"
+
+#~ msgid "now"
+#~ msgstr "nu"
+
+#~ msgid "year"
+#~ msgstr "år"
+
+#~ msgid "ago"
+#~ msgstr "sen"
+
+#~ msgid "day"
+#~ msgstr "dag"
+
+#~ msgid "hours"
+#~ msgstr "timmar"
+
+#~ msgid "hour"
+#~ msgstr "timme"
+
+#~ msgid "minutes"
+#~ msgstr "minuter"
+
+#~ msgid "minute"
+#~ msgstr "minut"
+
+#~ msgid "Are you sure you want to update the time for [listName]?"
+#~ msgstr "Är du säker på att du vill uppdatera tiden för [listName]?"
+
+#~ msgid "Update"
+#~ msgstr "Uppdatera"
+
+#~ msgid "between"
+#~ msgstr "mellan"
+
+#~ msgid "Old"
+#~ msgstr "Gammal"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "I could not find anything in the list"
+#~ msgstr "Jag kunde inte hitta något i listan"
+
+#~ msgid "Heading"
+#~ msgstr "Rubrik"
+
+#~ msgid "Debug %s"
+#~ msgstr "Felsök %s"
+
+#~ msgid "Debug Database Queries"
+#~ msgstr "Felsök databasfrågor"
+
+#~ msgid "Query Time Limit"
+#~ msgstr "Gränsvärde för databasfrågor"
+
+#~ msgid "Page Time Limit"
+#~ msgstr "Gränsvärde för sidvisning"
+
+#~ msgid "Slow Part Percent Limit"
+#~ msgstr "Gränsvärde för långsam del"
+
+#~ msgid "Custom Debug File"
+#~ msgstr "Egen debug-fil"
+
+#~ msgid "Log and Debug"
+#~ msgstr "Log och debug"
+
+#~ msgid "Add this to the end of %s"
+#~ msgstr "Lägg till detta i slutet av %s"
+
+#~ msgid ""
+#~ "%s is not writable. Please, make sure that the folder can be written to "
+#~ "so that Wordpress can log errors"
+#~ msgstr ""
+#~ "%s är inte skrivbar. Se till så att mappen är skrivbar så att Wordpress "
+#~ "kan logga fel"
+
+#~ msgid "Change settings in %s"
+#~ msgstr "Ändra inställningar i %s"
+
+#~ msgid ""
+#~ "Change %s to %s in %s or else you have to handle the content in %s so "
+#~ "that it does not grow in size"
+#~ msgstr ""
+#~ "Ändra %s till %s i %s, eller så måste du hantera innehållet i %s för att "
+#~ "det inte ska växa i storlek"
+
+#~ msgid ""
+#~ "This will hurt performance on the frontend so use this for debugging only "
+#~ "and then turn off"
+#~ msgstr ""
+#~ "Detta påverkar prestandan negativt på webbsidan så använd detta endast "
+#~ "för debugging och stäng av det efteråt"
+
+#~ msgid "Remove %s from %s"
+#~ msgstr "Ta bort %s från %s"
+
+#~ msgid "The file is not readable"
+#~ msgstr "Filen är inte läsbar"
+
+#~ msgid "New Errors"
+#~ msgstr "Nya fel"
+
+#~ msgid "There are %d new errors in the log"
+#~ msgstr "Det finns %d nya fel i loggen"
+
+#~ msgid "There is one new error in the log"
+#~ msgstr "Det finns ett nytt fel i loggen"
+
+#~ msgid "Publish"
+#~ msgstr "Publik"
+
+#~ msgid "Notice"
+#~ msgstr "Notifiering"
+
+#~ msgid "The information was trashed"
+#~ msgstr "Informationen är lagd i papperskorgen"
+
+#~ msgid "The information was restored"
+#~ msgstr "Informationen återställdes"
+
+#~ msgid "The information was deleted"
+#~ msgstr "Informationen togs bort"
+
+#~ msgid "The information is being ignored from now on"
+#~ msgstr "Informationen ignoreras from. nu"
+
+#~ msgid "I could only delete %d within %d seconds"
+#~ msgstr "Jag kunde endast radera %s inom %d sekunder"
+
+#~ msgid "I deleted them all for you"
+#~ msgstr "Jag tog bort allihop åt dig"
+
+#~ msgid "All"
+#~ msgstr "Alla"
+
+#~ msgid "Ignore"
+#~ msgstr "Ignorera"
+
+#~ msgid "Trash"
+#~ msgstr "Papperskorg"
+
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgid "Permanently Delete"
+#~ msgstr "Radera permanent"
+
+#~ msgid "Deprecated"
+#~ msgstr "Gammalt"
+
+#~ msgid "Warning"
+#~ msgstr "Varning"
+
+#~ msgid "Fatal Error"
+#~ msgstr "Kritiskt fel"
+
+#~ msgid "Git Error"
+#~ msgstr "Git-fel"
+
+#~ msgid "Delete All"
+#~ msgstr "Radera alla"
