@@ -1,25 +1,30 @@
-const publicKeyCredentialAllowed = window.PublicKeyCredential ? true : false;
+const publicKeyCredentialAllowed = (window.PublicKeyCredential ? true : false);
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function()
+{
 	const box = document.getElementById("secure-passkey-login-wrapper");
 	const submit = document.querySelector(".submit");
-	if (box && submit) {
+
+	if(box && submit)
+	{
 		submit.insertAdjacentElement("afterend", box);
 	}
-	if (box) {
+
+	if(box)
+	{
 		box.style.display = "block";
 	}
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-	document
-		.getElementById("login-via-passkey")
-		.addEventListener("click", async (event) => {
-			event.preventDefault();
-			await loginWithPasskey();
-		});
+document.addEventListener("DOMContentLoaded", function()
+{
+	document.getElementById("login-via-passkey").addEventListener("click", async (event) => {
+		event.preventDefault();
+		await loginWithPasskey();
+	});
 
-	async function loginWithPasskey() {
+	async function loginWithPasskey()
+	{
 		const errorMessage = document.getElementById("errorMessage");
 		const successMessage = document.getElementById("successMessage");
 		const passkeySigninButton = document.getElementById("login-via-passkey");
@@ -32,7 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		buttonText.style.display = "none";
 		passkeySigninButton.disabled = true;
 
-		if (!publicKeyCredentialAllowed) {
+		if(!publicKeyCredentialAllowed)
+		{
 			errorMessage.querySelector("div > p").textContent = secure_passkeys_object.i18n.passkeys_not_supported_in_browser;
 			errorMessage.style.display = "block";
 			spinnerText.style.display = "none";

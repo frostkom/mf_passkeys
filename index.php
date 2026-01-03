@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.2
+Version: 1.4.3
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se

@@ -1,4 +1,11 @@
 .secure-passkey-login-wrapper
 {
+	display: none;
 	padding-bottom: 1em;
 }
+
+	.submit + .secure-passkey-login-wrapper
+	{
+		clear: both;
+		padding-top: 1em;
+	}

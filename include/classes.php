@@ -187,8 +187,6 @@ class mf_passkeys
 
 		$class_file = str_replace('/', DIRECTORY_SEPARATOR, $class_file);
 
-		//do_log(__FUNCTION__.": ".$class." -> ".$class_file." -> ".$basename." -> ".SECURE_PASSKEYS_PLUGIN_DIR.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$class_file.'.php');
-
 		return SECURE_PASSKEYS_PLUGIN_DIR.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$class_file.'.php';
 	}
 
@@ -212,8 +210,6 @@ class mf_passkeys
 			{
 				$classes[] = new $class();
 			}
-
-			//error_log(SECURE_PASSKEYS_PLUGIN_DIR." -> ".__FUNCTION__.": ".str_replace(array("\r", "\n"), "", var_export($classes, true)));
 		}
 
 		return $classes;
@@ -256,7 +252,7 @@ class mf_passkeys
 		$credential_id = $this->get_raw_credential_id($credentials['rawId']);
 
 		$data = $this->get_by_credential_id($credential_id);
-		
+
 		if(is_null($data) || !$data->is_active)
 		{
 			throw new Exception('Invalid credentials');
@@ -349,7 +345,7 @@ class mf_passkeys
 	}
 
 	function do_authn_enable_action(int $user_id, string $challenge, array $data, ?string $security_key = null): array
-	{		
+	{
 		$webAuthn = new Web_Authn(
 			$this->get_relying_party_id(),
 			$this->get_relying_party_id()
@@ -379,11 +375,6 @@ class mf_passkeys
 			'aaguid' => $this->convert_aaguid_to_hex($attestation->AAGUID),
 			'last_used_at' => null,
 		];
-	}
-
-	function do_remove_authn(int $user_id, int $id): bool
-	{
-		return $this->remove_by_user_id($id, $user_id);
 	}
 
 	function remove_by_user_id(int $id, int $user_id)
@@ -474,12 +465,12 @@ class mf_passkeys
 		{
 			$ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
 		}
-		
+
 		else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
 		{
 			$ip = rest_is_ip_address(trim(current(preg_split('/,/', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']))))));
 		}
-		
+
 		else
 		{
 			$ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
@@ -569,7 +560,7 @@ class mf_passkeys
 				break;
 			}
 		}
-		
+
 		while ($counter < 10);
 
 		return $challenge;
@@ -583,7 +574,7 @@ class mf_passkeys
 		{
 			$record = $this->get_by_challenge_ip_address_not_used($challenge, $ip_address);
 		}
-		
+
 		else
 		{
 			$record = $this->get_by_challenge_not_used($challenge);
@@ -1142,7 +1133,7 @@ class mf_passkeys
 
 			$this->do_signin_action($data->user_id);
 		}
-		
+
 		catch(Exception $e)
 		{
 			wp_send_json_error(__("Passkey authentication failed. Please try again.", 'lang_passkeys'));
@@ -1240,7 +1231,7 @@ class mf_passkeys
 			$wpdb->insert($wpdb->base_prefix."secure_passkeys_webauthns", $data_temp);
 			$webauthn_id = $wpdb->insert_id;
 		}
-		
+
 		catch(Exception $e)
 		{
 			wp_send_json_error(__("Failed to register the passkey. Please try again later.", 'lang_passkeys'));
@@ -1255,7 +1246,7 @@ class mf_passkeys
 		wp_send_json_success([]);
 	}
 
-	function remove_passkey(): void
+	function remove_passkey()
 	{
 		global $wpdb;
 
@@ -1268,9 +1259,9 @@ class mf_passkeys
 
 		try
 		{
-			$remove = $this->do_remove_authn($user_id, $id);
+			$remove = $this->remove_by_user_id($user_id, $id);
 		}
-		
+
 		catch(Exception $e)
 		{
 			$remove = false;
