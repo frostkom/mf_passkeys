@@ -102,7 +102,7 @@ defined('ABSPATH') || exit;
 									}
 ?>
 									<td :data-label="i18n.last_used_column">
-										{{ item.last_used_at || "-" }}
+										{{ item.last_used_at }}
 									</td>
 									<td :data-label="i18n.created_at_column">
 										{{ item.created_at }}

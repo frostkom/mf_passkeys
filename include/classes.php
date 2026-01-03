@@ -642,12 +642,12 @@ class mf_passkeys
 
 	// Admin
 	####################
-	function get_authenticator(?string $aaguid)
+	/*function get_authenticator(?string $aaguid)
 	{
 		$aaguids = self::AAGUIDS;
 
 		return $aaguids[$aaguid] ?? null;
-	}
+	}*/
 
 	function ensure_user_can_perform_action(int $user_id)
 	{
@@ -1099,7 +1099,7 @@ class mf_passkeys
 		array_map(function($record)
 		{
 			$record->blog_name = (is_multisite() ? get_blog_option($record->blog_id, 'blogname') : __("This Site", 'lang_passkeys'));
-			$record->aaguid = $this->get_authenticator($record->aaguid);
+			//$record->aaguid = $this->get_authenticator($record->aaguid)['name'];
 			$record->is_active = intval($record->is_active);
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
@@ -1171,7 +1171,7 @@ class mf_passkeys
 		array_map(function ($record)
 		{
 			$record->blog_name = get_blog_option($record->blog_id, 'blogname');
-			$record->aaguid = $this->get_authenticator($record->aaguid);
+			//$record->aaguid = $this->get_authenticator($record->aaguid)['name'];
 			$record->is_active = intval($record->is_active);
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
