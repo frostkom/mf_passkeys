@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.3
+Version: 1.4.4
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -38,12 +38,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_filter('manage_users_columns', [$obj_passkeys, 'manage_users_columns']);
 		add_action('manage_users_custom_column', [$obj_passkeys, 'manage_users_custom_column'], 10, 3);
 		add_action('admin_notices', [$obj_passkeys, 'admin_notices']);
-
-		add_action('show_user_profile', [$obj_passkeys, 'edit_user_profile'], 1);
-		add_action('edit_user_profile', [$obj_passkeys, 'edit_user_profile'], 1);
-
-		add_action('admin_enqueue_scripts', [$obj_passkeys, 'enqueue_scripts'], 10);
-		add_action('admin_enqueue_scripts', [$obj_passkeys, 'enqueue_profile_passkey_vue_script'], 10);
 	}
 
 	else
@@ -51,13 +45,15 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('login_form', [$obj_passkeys, 'login_form']);
 	}
 
+	add_action('show_user_profile', [$obj_passkeys, 'show_user_profile'], 1);
+
 	if(wp_doing_ajax())
 	{
 		add_action('wp_ajax_secure_passkeys_adminarea_delete_passkey', [$obj_passkeys, 'delete_passkey']);
 		add_action('wp_ajax_secure_passkeys_adminarea_get_profile_registered_passkeys_list', [$obj_passkeys, 'get_profile_registered_passkeys_list']);
 
 		add_action('wp_ajax_nopriv_secure_passkeys_frontend_get_login_options', [$obj_passkeys, 'get_ajax_login_options'], 100);
-		add_action('wp_ajax_nopriv_secure_passkeys_frontend_login', [$obj_passkeys, 'login'], 100);
+		add_action('wp_ajax_nopriv_secure_passkeys_frontend_login', [$obj_passkeys, 'frontend_login'], 100);
 		add_action('wp_ajax_secure_passkeys_frontend_get_registered_passkeys_list', [$obj_passkeys, 'get_registered_passkeys_list'], 100);
 		add_action('wp_ajax_secure_passkeys_frontend_get_register_options', [$obj_passkeys, 'get_register_options'], 100);
 		add_action('wp_ajax_secure_passkeys_frontend_register_passkey', [$obj_passkeys, 'register_passkey'], 100);

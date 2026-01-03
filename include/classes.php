@@ -739,139 +739,11 @@ class mf_passkeys
 
 		return ($found ? $key : '');
 	}
-
-	public function enqueue_scripts($hook)
-	{
-		$resources = [];
-
-		$key = $this->get_page_resource_key($resources, $hook);
-
-		if(!empty($key))
-		{
-			$scripts = [
-				'vuejs' => $this->get_js_admin_assets_url('vue.js'),
-				'vue-router' => $this->get_js_admin_assets_url('vue-router.js'),
-				'jquery-ui' => $this->get_css_admin_assets_url('jquery-ui.css'),
-				'secure-passkeys-css' => $this->get_css_admin_assets_url('style.css'),
-			];
-
-			if(!empty($resources[$key]))
-			{
-				$scripts = array_merge($scripts, $resources[$key]);
-			}
-
-			wp_localize_script('vuejs', 'secure_passkeys_params', [
-				'url' => admin_url('admin-ajax.php'),
-				'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
-				'i18n' => [
-					'delete_message' => __("Are you sure you want to delete the passkey?", 'lang_passkeys'),
-					'activate_message' => __("Are you sure you want to activate the passkey?", 'lang_passkeys'),
-					'deactivate_message' => __("Are you sure you want to deactivate the passkey?", 'lang_passkeys'),
-				]
-			]);
-		}
-	}
-
-	function enqueue_profile_passkey_vue_script($hook)
-	{
-		/*if(is_admin())
-		{*/
-			global $current_screen;
-
-			$is_correct_page = ($current_screen && in_array($current_screen->id, ['profile', 'user-edit']));
-		/*}
-
-		else
-		{
-			global $post;
-
-			$post_id = apply_filters('get_block_search', $post->ID, 'mf/userprofile');
-
-			do_log(__FUNCTION__.": ".$post->ID." -> ".$post_id);
-
-			$is_correct_page = ($post_id == $post->ID);
-		}*/
-
-		if(!$is_correct_page)
-		{
-			return;
-		}
-
-		global $current_screen;
-
-		$user_id = intval($current_screen->id === 'profile' ? get_current_user_id() : intval($_GET['user_id'] ?? 0));
-
-		$scripts = [
-			'vue-js' => $this->get_js_admin_assets_url('vue3.js'),
-			'vue-profile' => $this->get_js_admin_assets_url('profile.js'),
-			'profile-css' => $this->get_css_admin_assets_url('profile.css'),
-		];
-
-		$this->enqueue_assets($scripts);
-
-		$has_access = current_user_can('edit_user', $user_id);
-
-		wp_localize_script('vue-js', 'secure_passkeys_params', [
-			'url' => admin_url('admin-ajax.php'),
-			'user_id' => $user_id,
-			'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
-			'is_owner' => $user_id === get_current_user_id(),
-			'has_access' => $has_access,
-			'content' => $this->include_vue_adminarea_file('profile', [], true),
-			'i18n' => [
-				'passkey_label' => __("Passwordless sign-in with passkeys", 'lang_passkeys'),
-				'description' => __("Passkeys offer a secure and user-friendly authentication method, serving as an alternative or complement to traditional methods. They validate your identity through touch, facial recognition, device passwords, or PINs, and can effectively replace passwords.", 'lang_passkeys'),
-				'domain_column' => __("Domain", 'lang_passkeys'),
-				'last_used_column' => __("Last Used", 'lang_passkeys'),
-				'created_at_column' => __("Created Date", 'lang_passkeys'),
-				'actions_column' => __("Actions", 'lang_passkeys'),
-				'activate' => __("Activate", 'lang_passkeys'),
-				'deactivate' => __("Deactivate", 'lang_passkeys'),
-				'delete' => __("Delete", 'lang_passkeys'),
-				'processing' => __("Processing...", 'lang_passkeys'),
-				'deleting' => __("Deleting...", 'lang_passkeys'),
-				'no_records_found' => __("No records found.", 'lang_passkeys'),
-				'loading' => __("Loading passkeys...", 'lang_passkeys'),
-				'unexpected_error' => __("An unexpected error occurred.", 'lang_passkeys'),
-				'delete_message' => __("Are you sure you want to delete the passkey?", 'lang_passkeys'),
-				'activate_message' => __("Are you sure you want to activate the passkey?", 'lang_passkeys'),
-				'deactivate_message' => __("Are you sure you want to deactivate the passkey?", 'lang_passkeys'),
-				'failed_fetch_passkeys' => __("Failed to fetch passkeys.", 'lang_passkeys'),
-				'failed_delete_passkey' => "An error occurred while deleting the passkey.",
-				'out_of' => __("out of", 'lang_passkeys'),
-				'add_passkey_button' => __("Add Passkey", 'lang_passkeys'),
-				'add_button' => __("Add", 'lang_passkeys'),
-				'cancel_button' => __("Cancel", 'lang_passkeys'),
-				'your_passkeys' => __("Your Passkeys", 'lang_passkeys'),
-				'user_passkeys' => __("User Passkeys", 'lang_passkeys'),
-				'add_waiting_button' => __("Waiting for input from browser interaction...", 'lang_passkeys'),
-				'added_on' => __("Added", 'lang_passkeys'),
-				'last_used' => __("Last used", 'lang_passkeys'),
-				'security_key_name' => __("Name your security key", 'lang_passkeys'),
-				'inactive' => __("Inactive", 'lang_passkeys'),
-				'active' => __("Active", 'lang_passkeys'),
-				'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
-				'failed_load_passkeys' => __("An error occurred while loading passkeys.", 'lang_passkeys'),
-				'failed_cancel_register' => __("Passkey registration failed or cancelled.", 'lang_passkeys'),
-				'failed_save_passkey_name_length' => __("The security key name must be between 3 and 30 characters long.", 'lang_passkeys'),
-				'passkey_already_registered' => __("You already registered this device. You don't have to register it again.", 'lang_passkeys'),
-				'failed_register' => "An error occurred while registering passkey. Please try again if you want to proceed.",
-				'cancelled_register' => __("Passkey registration cancelled. Please try again if you want to proceed.", 'lang_passkeys'),
-				'confirm_delete_passkey' => __("Are you sure you want to delete your passkey?", 'lang_passkeys'),
-				'success_delete_passkey' => __("Passkey successfully deleted.", 'lang_passkeys'),
-				'failed_load_options' => __("Failed to fetch passkey registration options.", 'lang_passkeys'),
-				'failed_save_passkey' => __("An error occurred while saving the passkey.", 'lang_passkeys'),
-				'failed_save_passkey_name' => __("Please use only letters, numbers, spaces, hyphens, or underscores.", 'lang_passkeys'),
-				'success_save_passkey' => __("Passkey successfully added", 'lang_passkeys'),
-				'no_passkeys_found' =>  __("No passkeys found", 'lang_passkeys'),
-			]
-		]);
-	}
 	####################
 
 	// Frontend
 	####################
-	public function login_form()
+	function login_form()
 	{
 		global $wpdb;
 
@@ -1027,6 +899,58 @@ class mf_passkeys
 
 		return ($wpdb->insert_id > 0);
 	}
+
+	function get_ajax_login_options()
+	{
+		$this->validate_frontend_ajax_request();
+
+		$challenge = $this->generate_challenge('authentication');
+
+		$options = $this->get_login_options($challenge);
+
+		wp_send_json_success($options);
+	}
+
+	function frontend_login()
+	{
+		$this->validate_frontend_ajax_request();
+
+		$params = [
+			'rawId' => sanitize_text_field(wp_unslash($_POST['rawId'] ?? '')),
+			'response' => map_deep(wp_unslash($_POST['response'] ?? []), 'sanitize_text_field')
+		];
+
+		$challenge = sanitize_text_field(wp_unslash($_POST['challenge'] ?? ''));
+
+		try
+		{
+			$this->verify_challenge_or_throw_exception($challenge, 'authentication');
+
+			$data = $this->do_login_action($challenge, $params);
+
+			$this->touch_last_used($data->id);
+
+			$this->mark_as_used_challenge($challenge);
+
+			$this->do_signin_action($data->user_id);
+		}
+
+		catch(Exception $e)
+		{
+			wp_send_json_error(__("Passkey authentication failed. Please try again.", 'lang_passkeys'));
+		}
+
+		$this->add_record('login', $data->user_id, $data->security_key_name, null, $data->aaguid, $data->id);
+
+		$redirect_to = $this->login_redirect_to();
+
+		$user_data = get_userdata($data->user_id);
+		$redirect_to = apply_filters('filter_login_redirect', $redirect_to, $user_data);
+
+		wp_send_json_success([
+			'redirect_url' => $redirect_to,
+		]);
+	}
 	####################
 
 	function delete_passkey()
@@ -1097,58 +1021,6 @@ class mf_passkeys
 		}, $records);
 
 		wp_send_json_success($records);
-	}
-
-	function get_ajax_login_options()
-	{
-		$this->validate_frontend_ajax_request();
-
-		$challenge = $this->generate_challenge('authentication');
-
-		$options = $this->get_login_options($challenge);
-
-		wp_send_json_success($options);
-	}
-
-	function login()
-	{
-		$this->validate_frontend_ajax_request();
-
-		$params = [
-			'rawId' => sanitize_text_field(wp_unslash($_POST['rawId'] ?? '')),
-			'response' => map_deep(wp_unslash($_POST['response'] ?? []), 'sanitize_text_field')
-		];
-
-		$challenge = sanitize_text_field(wp_unslash($_POST['challenge'] ?? ''));
-
-		try
-		{
-			$this->verify_challenge_or_throw_exception($challenge, 'authentication');
-
-			$data = $this->do_login_action($challenge, $params);
-
-			$this->touch_last_used($data->id);
-
-			$this->mark_as_used_challenge($challenge);
-
-			$this->do_signin_action($data->user_id);
-		}
-
-		catch(Exception $e)
-		{
-			wp_send_json_error(__("Passkey authentication failed. Please try again.", 'lang_passkeys'));
-		}
-
-		$this->add_record('login', $data->user_id, $data->security_key_name, null, $data->aaguid, $data->id);
-
-		$redirect_to = $this->login_redirect_to();
-
-		$user_data = get_userdata($data->user_id);
-		$redirect_to = apply_filters('filter_login_redirect', $redirect_to, $user_data);
-
-		wp_send_json_success([
-			'redirect_url' => $redirect_to,
-		]);
 	}
 
 	function get_registered_passkeys_list()
@@ -1374,8 +1246,122 @@ class mf_passkeys
 		}
 	}
 
-	public function edit_user_profile()
+	function show_user_profile()
 	{
+		$resources = [];
+		$hook = 'show_user_profile';
+
+		$key = $this->get_page_resource_key($resources, $hook);
+
+		if(!empty($key))
+		{
+			$scripts = [
+				'vuejs' => $this->get_js_admin_assets_url('vue.js'),
+				'vue-router' => $this->get_js_admin_assets_url('vue-router.js'),
+				'jquery-ui' => $this->get_css_admin_assets_url('jquery-ui.css'),
+				'secure-passkeys-css' => $this->get_css_admin_assets_url('style.css'),
+			];
+
+			if(!empty($resources[$key]))
+			{
+				$scripts = array_merge($scripts, $resources[$key]);
+			}
+
+			wp_localize_script('vuejs', 'secure_passkeys_params', [
+				'url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
+				'i18n' => [
+					'delete_message' => __("Are you sure you want to delete the passkey?", 'lang_passkeys'),
+					'activate_message' => __("Are you sure you want to activate the passkey?", 'lang_passkeys'),
+					'deactivate_message' => __("Are you sure you want to deactivate the passkey?", 'lang_passkeys'),
+				]
+			]);
+		}
+
+		if(is_admin())
+		{
+			global $current_screen;
+
+			$user_id = intval($current_screen->id === 'profile' ? get_current_user_id() : intval($_GET['user_id'] ?? 0));
+
+			$content = $this->include_vue_adminarea_file('profile', [], true);
+		}
+
+		else
+		{
+			$user_id = get_current_user_id();
+
+			do_action('load_table_attr');
+
+			$content = $this->include_vue_adminarea_file('widget_profile', [], true);
+		}
+
+		$scripts = [
+			'vue-js' => $this->get_js_admin_assets_url('vue3.js'),
+			'vue-profile' => $this->get_js_admin_assets_url('profile.js'),
+			'profile-css' => $this->get_css_admin_assets_url('profile.css'),
+		];
+
+		$this->enqueue_assets($scripts);
+
+		$has_access = current_user_can('edit_user', $user_id);
+
+		wp_localize_script('vue-js', 'secure_passkeys_params', [
+			'url' => admin_url('admin-ajax.php'),
+			'user_id' => $user_id,
+			'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
+			'is_owner' => $user_id === get_current_user_id(),
+			'has_access' => $has_access,
+			'content' => $content,
+			'i18n' => [
+				'passkey_label' => __("Passwordless sign-in with passkeys", 'lang_passkeys'),
+				'description' => __("Passkeys offer a secure and user-friendly authentication method, serving as an alternative or complement to traditional methods. They validate your identity through touch, facial recognition, device passwords, or PINs, and can effectively replace passwords.", 'lang_passkeys'),
+				'domain_column' => __("Domain", 'lang_passkeys'),
+				'last_used_column' => __("Last Used", 'lang_passkeys'),
+				'created_at_column' => __("Created Date", 'lang_passkeys'),
+				'actions_column' => __("Actions", 'lang_passkeys'),
+				'activate' => __("Activate", 'lang_passkeys'),
+				'deactivate' => __("Deactivate", 'lang_passkeys'),
+				'delete' => __("Delete", 'lang_passkeys'),
+				'processing' => __("Processing...", 'lang_passkeys'),
+				'deleting' => __("Deleting...", 'lang_passkeys'),
+				'no_records_found' => __("No records found.", 'lang_passkeys'),
+				'loading' => __("Loading passkeys...", 'lang_passkeys'),
+				'unexpected_error' => __("An unexpected error occurred.", 'lang_passkeys'),
+				'delete_message' => __("Are you sure you want to delete the passkey?", 'lang_passkeys'),
+				'activate_message' => __("Are you sure you want to activate the passkey?", 'lang_passkeys'),
+				'deactivate_message' => __("Are you sure you want to deactivate the passkey?", 'lang_passkeys'),
+				'failed_fetch_passkeys' => __("Failed to fetch passkeys.", 'lang_passkeys'),
+				'failed_delete_passkey' => "An error occurred while deleting the passkey.",
+				'out_of' => __("out of", 'lang_passkeys'),
+				'add_passkey_button' => __("Add Passkey", 'lang_passkeys'),
+				'add_button' => __("Add", 'lang_passkeys'),
+				'cancel_button' => __("Cancel", 'lang_passkeys'),
+				'your_passkeys' => __("Your Passkeys", 'lang_passkeys'),
+				'user_passkeys' => __("User Passkeys", 'lang_passkeys'),
+				'add_waiting_button' => __("Waiting for input from browser interaction...", 'lang_passkeys'),
+				'added_on' => __("Added", 'lang_passkeys'),
+				'last_used' => __("Last used", 'lang_passkeys'),
+				'security_key_name' => __("Name your security key", 'lang_passkeys'),
+				'inactive' => __("Inactive", 'lang_passkeys'),
+				'active' => __("Active", 'lang_passkeys'),
+				'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
+				'failed_load_passkeys' => __("An error occurred while loading passkeys.", 'lang_passkeys'),
+				'failed_cancel_register' => __("Passkey registration failed or cancelled.", 'lang_passkeys'),
+				'failed_save_passkey_name_length' => __("The security key name must be between 3 and 30 characters long.", 'lang_passkeys'),
+				'passkey_already_registered' => __("You already registered this device. You don't have to register it again.", 'lang_passkeys'),
+				'failed_register' => "An error occurred while registering passkey. Please try again if you want to proceed.",
+				'cancelled_register' => __("Passkey registration cancelled. Please try again if you want to proceed.", 'lang_passkeys'),
+				'confirm_delete_passkey' => __("Are you sure you want to delete your passkey?", 'lang_passkeys'),
+				'success_delete_passkey' => __("Passkey successfully deleted.", 'lang_passkeys'),
+				'failed_load_options' => __("Failed to fetch passkey registration options.", 'lang_passkeys'),
+				'failed_save_passkey' => __("An error occurred while saving the passkey.", 'lang_passkeys'),
+				'failed_save_passkey_name' => __("Please use only letters, numbers, spaces, hyphens, or underscores.", 'lang_passkeys'),
+				'success_save_passkey' => __("Passkey successfully added", 'lang_passkeys'),
+				'no_passkeys_found' =>  __("No passkeys found", 'lang_passkeys'),
+			]
+		]);
+
 		echo "<div id='passkey-app'>
 			<passkey-list></passkey-list>
 		</div>";
