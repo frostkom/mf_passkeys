@@ -15,7 +15,6 @@ const app = createApp({
 		missingNonce: false,
 		deletingId: 0,
 		isRTL: secure_passkeys_params.isRTL,
-		/*credentials_allowed_count: secure_passkeys_params.credentials_allowed_count,*/
 		challenge: "",
 		error: "",
 		success: "",
@@ -108,55 +107,6 @@ const app = createApp({
 		"JSON"
 		);
 	},
-	/*activateDeactivatePasskey(id, is_active) {
-		let message = "";
-
-		if (is_active) {
-		message =
-			secure_passkeys_params?.i18n?.deactivate_message ??
-			"Are you sure you want to deactivate the passkey?";
-		} else {
-		message =
-			secure_passkeys_params?.i18n?.activate_message ??
-			"Are you sure you want to activate the passkey?";
-		}
-
-		if (!confirm(message)) {
-		return;
-		}
-		var that = this;
-		this.actionProcessing = true;
-		this.actionProcessingId = id;
-		this.errorMessage = "";
-		this.successMessage = "";
-		jQuery.post(
-		secure_passkeys_params.url,
-		{
-			nonce: secure_passkeys_params.nonce,
-			action: "secure_passkeys_adminarea_activate_deactivate_passkey",
-			id: id,
-			procedure: is_active ? "deactivate" : "activate",
-		},
-		function (data) {
-			that.actionProcessing = false;
-			that.actionProcessingId = 0;
-			if (data.success) {
-			that.successMessage = data.data.message;
-			that.loadPasskeys();
-			} else {
-			if (data.data.missing_nonce) {
-				that.missingNonce = true;
-			}
-			if (data.data.message) {
-				that.errorMessage = data.data.message;
-			} else {
-				that.errorMessage = "Something went wrong!";
-			}
-			}
-		},
-		"JSON"
-		);
-	},*/
 	async addPasskey() {
 		this.errorMessage = null;
 		this.successMessage = null;
@@ -166,12 +116,6 @@ const app = createApp({
 			this.errorMessage = this.i18n.passkeys_not_supported_in_browser;
 			return;
 		}
-
-		/*if(this.credentials_allowed_count !== null && this.credentials_allowed_count <= this.list?.length)
-		{
-			this.errorMessage = this.i18n.reach_maximum_credentials;
-			return;
-		}*/
 
 		this.addingPasskey = true;
 

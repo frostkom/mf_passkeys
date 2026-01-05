@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.4
+Version: 1.4.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -100,7 +100,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			//'' => "ALTER TABLE [table] CHANGE [column] [column] VARCHAR(129) DEFAULT NULL",
 		);
 
-		$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_logs (
+		/*$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_logs (
 			id BIGINT(20) unsigned NOT NULL AUTO_INCREMENT,
 			user_id INT(11) NOT NULL,
 			blog_id INT(11) NOT NULL,
@@ -114,14 +114,13 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			KEY user_id (user_id)
-		) DEFAULT CHARSET=".$default_charset);
+		) DEFAULT CHARSET=".$default_charset);*/
 
 		$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_webauthns (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id INT(11) NOT NULL,
 			blog_id INT(11) NOT NULL,
 			credential_id VARCHAR(255) NOT NULL,
-			is_active TINYINT(1) NOT NULL DEFAULT '1',
 			security_key_name VARCHAR(255) NOT NULL,
 			public_key TEXT NOT NULL,
 			aaguid CHAR(36) NOT NULL,
@@ -131,7 +130,11 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			PRIMARY KEY (id),
 			UNIQUE KEY credential_id (credential_id),
 			KEY user_id (user_id)
-		) DEFAULT CHARSET=".$default_charset);
+		) DEFAULT CHARSET=".$default_charset); //is_active TINYINT(1) NOT NULL DEFAULT '1',
+
+		$arr_update_column[$wpdb->base_prefix."secure_passkeys_webauthns"] = array(
+			'is_active' => "ALTER TABLE [table] DROP COLUMN [column]", //260105
+		);
 
 		update_columns($arr_update_column);
 		add_columns($arr_add_column);
@@ -140,13 +143,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 
 	function uninstall_passkeys()
 	{
-		include_once("include/classes.php");
-
-		$obj_passkeys = new mf_passkeys();
-
 		mf_uninstall_plugin(array(
-			//'options' => array(''),
-			'tables' => array('secure_passkeys_challenges', 'secure_passkeys_logs', 'secure_passkeys_webauthns'),
+			'tables' => array('secure_passkeys_challenges', 'secure_passkeys_webauthns'),
 		));
 	}
 }
