@@ -9,3 +9,8 @@
 		clear: both;
 		padding-top: 1em;
 	}
+
+	.secure-passkey-login-wrapper .errorMessage, .secure-passkey-login-wrapper .successMessage, .secure-passkey-login-wrapper .spinnerText
+	{
+		display: none;
+	}

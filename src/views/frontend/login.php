@@ -1,17 +1,11 @@
 <?php
-/**
- * Login Default template
- *
- * @package SecurePasskeys
- */
 
-defined('ABSPATH') || exit;
-?>
-<div id="secure-passkey-login-wrapper" class="secure-passkey-login-wrapper wp-block-button">
-	<div id="errorMessage" class='notification' style="display: none;"><div class="notice notice-error error"><p></p></div></div>
-	<div id="successMessage" class='notification' style="display: none;"><div class="notice notice-success updated"><p></p></div></div>
-	<button id="login-via-passkey" class="button button-large login-via-passkey wp-block-button__link">
-		<span id="spinnerText" style="display: none;"><?php echo __("Login via Passkey...", 'lang_passkeys') ;?></span>
-		<span id="buttonText"><?php echo __("Login via Passkey", 'lang_passkeys') ;?></span>
+echo "<div class='secure-passkey-login-wrapper wp-block-button'>
+	<p>".__("...or login safer with...", 'lang_passkeys')."</p>
+	<div class='notification errorMessage'><div class='notice notice-error error'><p></p></div></div>
+	<div class='notification successMessage'><div class='notice notice-success updated'><p></p></div></div>
+	<button class='button wp-block-button__link'>
+		<span class='spinnerText'>".__("Logging in via Passkey...", 'lang_passkeys')."</span>
+		<span class='buttonText'>".__("Passkey", 'lang_passkeys')."</span>
 	</button>
-</div>
+</div>";
