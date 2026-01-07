@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.6
+Version: 1.4.7
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -82,7 +82,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			challenge_type ENUM('authentication', 'registration') NOT NULL,
 			challenge VARCHAR(255) NOT NULL,
 			fingerprint VARCHAR(255) NOT NULL,
-			ip_address VARCHAR(45) NOT NULL,
 			expired_at TIMESTAMP NULL DEFAULT NULL,
 			used_at TIMESTAMP NULL DEFAULT NULL,
 			created_at TIMESTAMP NULL DEFAULT NULL,
@@ -96,8 +95,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			//'' => "ALTER TABLE [table] ADD [column] ENUM('no', 'yes') NOT NULL DEFAULT 'no' AFTER ",
 		);
 
-		$arr_update_column[$wpdb->base_prefix.""] = array(
-			//'' => "ALTER TABLE [table] CHANGE [column] [column] VARCHAR(129) DEFAULT NULL",
+		$arr_update_column[$wpdb->base_prefix."secure_passkeys_challenges"] = array(
+			'ip_address' => "ALTER TABLE [table] DROP COLUMN [column]", //260107
 		);
 
 		/*$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_logs (
@@ -109,12 +108,15 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			security_key_name VARCHAR(255) DEFAULT NULL,
 			aaguid CHAR(36) DEFAULT NULL,
 			log_type VARCHAR(255) NOT NULL,
-			ip_address VARCHAR(45) NOT NULL,
 			created_at TIMESTAMP NULL DEFAULT NULL,
 			updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			KEY user_id (user_id)
-		) DEFAULT CHARSET=".$default_charset);*/
+		) DEFAULT CHARSET=".$default_charset);
+		
+		$arr_update_column[$wpdb->base_prefix."secure_passkeys_logs"] = array(
+			'ip_address' => "ALTER TABLE [table] DROP COLUMN [column]", //260107
+		);*/
 
 		$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_webauthns (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,

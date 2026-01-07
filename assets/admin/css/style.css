@@ -6,15 +6,13 @@
 	font-size: 10px;
 }
 
-.button.button-reset,
-.button.add {
+.button.button-reset, .button.add {
 	color: #fff;
 	border-color: #b90505;
 	background: #b90505;
 }
 
-.button.button-reset:hover,
-.button.add:hover {
+.button.button-reset:hover, .button.add:hover {
 	border-color: #c30e0e;
 	background: #c30e0e;
 	color: #fff;
@@ -63,46 +61,21 @@
 	background: #009688;
 }
 
-.authenticator-icon {
-	width: 15px;
-	background: #ffffff;
-	padding: 5px;
-	border: 1px solid #e8e8e8;
-	vertical-align: middle;
-	border-radius: 50%;
-}
-
-.rtl {
-	direction: rtl;
-	text-align: right;
-}
-
-.aligned {
+/*.aligned {
 	direction: ltr;
 	text-align: left;
-}
-[dir="rtl"] .aligned {
-	direction: rtl;
-	text-align: right;
+}*/
+
+.fade-enter-active, .fade-leave-active, .bounce-enter-active, .bounce-leave-active {
+	animation: bounce-in .5s;
+	transition: opacity .5s;
 }
 
-.fade-enter-active,
-.fade-leave-active,
-.bounce-enter-active,
-.bounce-leave-active {
-	animation: bounce-in 0.5s;
-	transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to,
-.bounce-enter-active,
-.bounce-leave-active {
+.fade-enter, .fade-leave-to, .bounce-enter-active, .bounce-leave-active {
 	display: none;
 }
 
-.wp-core-ui .button-active,
-.wp-core-ui .button-active:hover {
+/*.wp-core-ui .button-active, .wp-core-ui .button-active:hover {
 	background: #2e9688;
 	border-color: #2e9688;
 	color: #fff;
@@ -113,7 +86,7 @@
 .spinner.is-active.spin {
 	margin: 0;
 	float: none;
-}
+}*/
 
 .spinner-button {
 	background-size: 12px 12px;
@@ -127,9 +100,7 @@
 	display: block;
 }
 
-.notice,
-div.error,
-div.warning {
+/*.notice, div.error, div.warning {
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-left-color: #ff9966;
@@ -141,49 +112,7 @@ div.warning {
 
 div.error {
 	border-left-color: #d63638;
-}
-
-[dir="rtl"] .notice,
-[dir="rtl"] div.error,
-[dir="rtl"] div.warning {
-	border: 1px solid #c3c4c7;
-	border-right-color: #ff9966;
-	border-right-width: 4px;
-	border-left-color: #c3c4c7;
-	border-left-width: 1px;
-}
-
-[dir="rtl"] .notice,
-[dir="rtl"] div.error {
-	border-right-color: #d63638;
-	border-right-width: 4px;
-	border-left-color: #c3c4c7;
-	border-left-width: 1px;
-}
-
-.wp-list-table.passkeys .column-id {
-	width: 2.2em;
-}
-
-.wp-list-table.passkeys .column-user {
-	width: 15%;
-}
-
-.wp-list-table.passkeys .column-description {
-	width: 50%;
-}
-
-/*.wp-list-table.passkeys .column-authenticator_name {
-	width: 20%;
 }*/
-
-.text-active {
-	color: #358f49;
-}
-
-.text-inactive {
-	color: #d63638;
-}
 
 .help {
 	font-size: 12px !important;
@@ -208,30 +137,28 @@ div.error {
 	}
 }
 
-@media screen and (max-width: 600px) {
-	.nav-tab-wrapper,
-	.wrap h2.nav-tab-wrapper,
-	h1.nav-tab-wrapper {
+@media screen and (max-width: 600px)
+{
+	.nav-tab-wrapper, .wrap h2.nav-tab-wrapper, h1.nav-tab-wrapper
+	{
 		border-bottom: 1px solid #c3c4c7 !important;
 	}
 }
 
 @media screen and (max-width: 600px) {
-	h1 .nav-tab,
-	h2 .nav-tab,
-	h3 .nav-tab,
-	nav .nav-tab {
+	h1 .nav-tab, h2 .nav-tab, h3 .nav-tab, nav .nav-tab
+	{
 		border-bottom: unset !important;
 	}
 }
 
-.mt-15 {
+/*.mt-15 {
 	margin-top: 15px;
 }
 
 .mt-10 {
 	margin-top: 10px;
-}
+}*/
 
 .clearfix::after {
 	content: "";
@@ -291,13 +218,11 @@ div.error {
 	margin-bottom: 3px;
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade-enter-active, .fade-leave-active {
 	transition: opacity 0.5s;
 }
 
-.fade-enter,
-.fade-leave-to {
+.fade-enter, .fade-leave-to {
 	opacity: 0;
 }
 
@@ -307,7 +232,7 @@ div.error {
 	gap: 20px;
 }
 
-.col-md-12 {
+/*.col-md-12 {
 	position: relative;
 	width: 100%;
 }
@@ -317,19 +242,17 @@ div.error {
 	width: 100%;
 }
 
-@media (min-width: 768px) {
-	.col-md-4 {
+@media (min-width: 768px)
+{
+	.col-md-4
+	{
 		flex: 0 0 calc((100% - 40px) / 3);
 	}
-}
+}*/
 
-.float-end {
+/*.float-end {
 	float: right;
-}
-
-[dir="rtl"] .float-end {
-	float: left;
-}
+}*/
 
 @media screen and (max-width: 782px) {
 	.wp-list-table thead {
@@ -360,21 +283,9 @@ div.error {
 		white-space: nowrap !important;
 	}
 
-	.wp-list-table td.no-label {
+	/*.wp-list-table td.no-label {
 		padding-left: initial !important;
 		padding-right: initial !important;
 		text-align: center !important;
-	}
-
-	[dir="rtl"] .wp-list-table td {
-		text-align: left !important;
-		padding-left: initial !important;
-		padding-right: 50% !important;
-	}
-
-	[dir="rtl"] .wp-list-table td::before {
-		text-align: right !important;
-		left: initial !important;
-		right: 10px !important;
-	}
+	}*/
 }

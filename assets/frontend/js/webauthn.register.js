@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function()
 			{
 				is_public_key_credential_allowed: window.PublicKeyCredential ? true	: false,
 				i18n: secure_passkeys_object.i18n,
-				isRTL: secure_passkeys_object.is_rtl,
+				/*isRTL: secure_passkeys_object.is_rtl,*/
 				isLoading: false,
 				challenge: "",
 				error: "",
@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function()
 				try
 				{
 					let data = this.savedOptions;
+
 					if(this.securityKeyNameInput)
 					{
 						data.security_key_name = this.securityKeyNameInput;

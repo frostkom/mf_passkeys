@@ -161,7 +161,7 @@ class mf_passkeys
 		// Needed for login
 		spl_autoload_register([$this, 'autoload']);
 
-		$this->folder_loader(SECURE_PASSKEYS_PLUGIN_DIR.'/src/includes', SECURE_PASSKEYS_PLUGIN_DIR);
+		//$this->folder_loader(SECURE_PASSKEYS_PLUGIN_DIR.'/src/includes', SECURE_PASSKEYS_PLUGIN_DIR);
 	}
 
 	function autoload($class)
@@ -170,7 +170,7 @@ class mf_passkeys
 
 		if(file_exists($file))
 		{
-			require_once $file;
+			require_once($file);
 		}
 	}
 
@@ -190,7 +190,7 @@ class mf_passkeys
 		return SECURE_PASSKEYS_PLUGIN_DIR.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$class_file.'.php';
 	}
 
-	function folder_loader($folder, $plugin_dir)
+	/*function folder_loader($folder, $plugin_dir)
 	{
 		$classes = [];
 
@@ -213,7 +213,7 @@ class mf_passkeys
 		}
 
 		return $classes;
-	}
+	}*/
 
 	function convert_aaguid_to_hex($bin_aaguid)
 	{
@@ -229,6 +229,13 @@ class mf_passkeys
 		);
 	}
 
+	function get_relying_party_id()
+	{
+		$parsed_url = wp_parse_url(get_option('siteurl'));
+
+		return strval($parsed_url['host'] ?? '');
+	}
+
 	function get_login_options($challenge)
 	{
 		$options = [
@@ -242,12 +249,23 @@ class mf_passkeys
 		return $options;
 	}
 
+	function get_by_credential_id($credential_id)
+	{
+		global $wpdb;
+
+		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE credential_id = %s", $credential_id));
+	}
+
+	function base64url_decode($string)
+	{
+		return base64_decode(strtr($string, '-_', '+/').str_repeat('=', 3 - (3 + strlen($string)) % 4));
+	}
+
 	function do_login_action($challenge, $credentials)
 	{
-		$webauthn = new Web_Authn(
-			$this->get_relying_party_id(),
-			$this->get_relying_party_id()
-		);
+		$relying_party_id = $this->get_relying_party_id();
+
+		$webauthn = new Web_Authn($relying_party_id, $relying_party_id);
 
 		$credential_id = $this->get_raw_credential_id($credentials['rawId']);
 
@@ -287,17 +305,34 @@ class mf_passkeys
 		return true;
 	}
 
+	function get_user_full_name($user_id)
+	{
+		$first_name = get_user_meta($user_id, 'first_name', true);
+		$last_name = get_user_meta($user_id, 'last_name', true);
+
+		$full_name = trim($first_name.' '.$last_name);
+
+		if(empty($full_name))
+		{
+			$full_name = get_the_author_meta('user_email', $user_id);
+		}
+
+		return trim($full_name);
+	}
+
 	function do_enable_options_action($user_id, $challenge)
 	{
 		global $wpdb;
+
+		$relying_party_id = $this->get_relying_party_id();
 
 		$username = $this->get_user_full_name($user_id);
 
 		$options = [
 			'challenge' => $challenge,
 			'rp' => [
-				'id' => $this->get_relying_party_id(),
-				'name' => $this->get_relying_party_id(),
+				'id' => $relying_party_id,
+				'name' => $relying_party_id,
 			],
 			'user' => [
 				'id' => base64_encode($user_id),
@@ -344,12 +379,29 @@ class mf_passkeys
 		return $options;
 	}
 
+	function is_credential_id_for_user_id($id, $credential_id)
+	{
+		global $wpdb;
+
+		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND credential_id = %s", $id, $credential_id));
+
+		return !is_null($record);
+	}
+
+	function is_security_key_name_for_user_id($id, $security_key_name)
+	{
+		global $wpdb;
+
+		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND security_key_name = %s", $id, $security_key_name));
+
+		return !is_null($record);
+	}
+
 	function do_authn_enable_action($user_id, $challenge, $data, $security_key = null)
 	{
-		$webAuthn = new Web_Authn(
-			$this->get_relying_party_id(),
-			$this->get_relying_party_id()
-		);
+		$relying_party_id = $this->get_relying_party_id();
+
+		$webAuthn = new Web_Authn($relying_party_id, $relying_party_id);
 
 		$credential_id = $this->get_raw_credential_id($data['rawId']);
 		$clientDataJSON = $this->base64url_decode($data['response']['clientDataJSON']);
@@ -377,66 +429,6 @@ class mf_passkeys
 		];
 	}
 
-	function remove_by_user_id($id, $user_id)
-	{
-		global $wpdb;
-
-		return $wpdb->delete($wpdb->base_prefix."secure_passkeys_webauthns", ['id' => $id, 'user_id' => $user_id]);
-	}
-
-	function is_security_key_name_for_user_id($id, $security_key_name)
-	{
-		global $wpdb;
-
-		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND security_key_name = %s", $id, $security_key_name));
-
-		return !is_null($record);
-	}
-
-	function is_credential_id_for_user_id($id, $credential_id)
-	{
-		global $wpdb;
-
-		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND credential_id = %s", $id, $credential_id));
-
-		return !is_null($record);
-	}
-
-	function touch_last_used($id)
-	{
-		global $wpdb;
-
-		return $wpdb->update($wpdb->base_prefix."secure_passkeys_webauthns", [
-			'blog_id' => $wpdb->blogid,
-			'last_used_at' => current_time('mysql')
-		],
-		['id' => $id]);
-	}
-
-	function get_user_full_name($user_id)
-	{
-		$first_name = get_user_meta($user_id, 'first_name', true);
-		$last_name = get_user_meta($user_id, 'last_name', true);
-
-		$full_name = trim($first_name.' '.$last_name);
-
-		if(empty($full_name))
-		{
-			$full_name = get_the_author_meta('user_email', $user_id);
-		}
-
-		return trim($full_name);
-	}
-
-	function get_relying_party_id()
-	{
-		$site_url = get_option('siteurl');
-		$parsed_url = wp_parse_url($site_url);
-		$value = $parsed_url['host'] ?? '';
-
-		return strval($value);
-	}
-
 	function authenticator_selection()
 	{
 		return [
@@ -457,30 +449,14 @@ class mf_passkeys
 		return $this->authenticator_selection();
 	}
 
-	/*function get_ip_address()
+	function get_raw_credential_id($credential_id)
 	{
-		if(!empty($_SERVER['HTTP_CLIENT_IP']))
-		{
-			$ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
-		}
-
-		else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-		{
-			$ip = rest_is_ip_address(trim(current(preg_split('/,/', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']))))));
-		}
-
-		else
-		{
-			$ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
-		}
-
-		return $ip;
-	}*/
+		return base64_encode($this->base64url_decode($credential_id));
+	}
 
 	function generate_fingerprint()
 	{
 		$userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? 'unknown'));
-		//$ip_address = ($this->get_ip_address() ?? 'unknown');
 		$ip_address = apply_filters('get_current_visitor_ip', "unknown");
 		$acceptLanguage = sanitize_text_field(wp_unslash($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'unknown'));
 
@@ -491,44 +467,9 @@ class mf_passkeys
 		return $fingerprintHash;
 	}
 
-	function verify_nonce($nonce)
-	{
-		return wp_verify_nonce(sanitize_text_field($nonce), SECURE_PASSKEYS_NONCE);
-	}
-
-	function base64url_decode($string)
-	{
-		return base64_decode(strtr($string, '-_', '+/').str_repeat('=', 3 - (3 + strlen($string)) % 4));
-	}
-
-	function get_raw_credential_id($credential_id)
-	{
-		return base64_encode($this->base64url_decode($credential_id));
-	}
-
-	function get_by_credential_id($credential_id)
+	function generate_challenge($challenge_type, $userId = null)
 	{
 		global $wpdb;
-
-		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE credential_id = %s", $credential_id));
-	}
-
-	function get_all_by_user_id($user_id)
-	{
-		global $wpdb;
-
-		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d ORDER BY created_at DESC", $user_id)); //, is_active
-	}
-
-	function generate_challenge($challenge_type, $userId = null, $ip_address = null)
-	{
-		global $wpdb;
-
-		if(is_null($ip_address))
-		{
-			//$ip_address = $this->get_ip_address();
-			$ip_address = apply_filters('get_current_visitor_ip', "");
-		}
 
 		$fingerprint = $this->generate_fingerprint();
 
@@ -548,6 +489,7 @@ class mf_passkeys
 			{
 				$data = [
 					'user_id' => $userId,
+					'blog_id' => $wpdb->blogid,
 					'challenge_type' => $challenge_type,
 					'challenge' => $challenge,
 					'fingerprint' => $fingerprint,
@@ -566,19 +508,11 @@ class mf_passkeys
 		return $challenge;
 	}
 
-	function verify_challenge_or_throw_exception($challenge, $challenge_type, $ip_address = null)
+	function verify_challenge_or_throw_exception($challenge, $challenge_type)
 	{
 		$fingerprint = $this->generate_fingerprint();
 
-		if(!is_null($ip_address))
-		{
-			$record = $this->get_by_challenge_ip_address_not_used($challenge, $ip_address);
-		}
-
-		else
-		{
-			$record = $this->get_by_challenge_not_used($challenge);
-		}
+		$record = $this->get_by_challenge_not_used($challenge);
 
 		if(is_null($record))
 		{
@@ -624,13 +558,6 @@ class mf_passkeys
 		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE challenge = %s AND used_at IS NULL", $challenge));
 	}
 
-	function get_by_challenge_ip_address_not_used($challenge, $ip_address)
-	{
-		global $wpdb;
-
-		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE challenge = %s AND ip_address = %s AND used_at IS NULL", $challenge, $ip_address));
-	}
-
 	// Admin
 	####################
 	function ensure_user_can_perform_action($user_id)
@@ -643,6 +570,11 @@ class mf_passkeys
 
 			wp_send_json_error(['message' => $message]);
 		}
+	}
+
+	function verify_nonce($nonce)
+	{
+		return wp_verify_nonce(sanitize_text_field($nonce), SECURE_PASSKEYS_NONCE);
 	}
 
 	function validate_adminarea_ajax_request()
@@ -858,15 +790,9 @@ class mf_passkeys
 		return SECURE_PASSKEYS_PLUGIN_URL.'assets/frontend/css/'.$file_name;
 	}
 
-	/*function add_record($log_type, $user_id, $security_key_name = null, $admin_id = null, $aaguid = null, $webauthn_id = null, $ip_address = null)
+	/*function add_record($log_type, $user_id, $security_key_name = null, $admin_id = null, $aaguid = null, $webauthn_id = null)
 	{
 		global $wpdb;
-
-		if(is_null($ip_address))
-		{
-			//$ip_address = $this->get_ip_address();
-			$ip_address = apply_filters('get_current_visitor_ip', "");
-		}
 
 		$wpdb->insert($wpdb->base_prefix."secure_passkeys_logs", [
 			'log_type' => $log_type,
@@ -876,7 +802,6 @@ class mf_passkeys
 			'user_id' => $user_id,
 			'admin_id' => $admin_id,
 			'webauthn_id' => $webauthn_id,
-			'ip_address' => $ip_address,
 			'created_at' => current_time('mysql'),
 			'updated_at' => current_time('mysql')
 		]);
@@ -893,6 +818,17 @@ class mf_passkeys
 		$options = $this->get_login_options($challenge);
 
 		wp_send_json_success($options);
+	}
+
+	function touch_last_used($id)
+	{
+		global $wpdb;
+
+		return $wpdb->update($wpdb->base_prefix."secure_passkeys_webauthns", [
+			'blog_id' => $wpdb->blogid,
+			'last_used_at' => current_time('mysql')
+		],
+		['id' => $id]);
 	}
 
 	function frontend_login()
@@ -976,6 +912,13 @@ class mf_passkeys
 		//$this->add_record($log_type, $record->user_id, $record->security_key_name, $admin_id, $record->aaguid);
 
 		wp_send_json_success(['message' => __("The passkey deleted successfully", 'lang_passkeys')]);
+	}
+
+	function get_all_by_user_id($user_id)
+	{
+		global $wpdb;
+
+		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d ORDER BY created_at DESC", $user_id)); //, is_active
 	}
 
 	function get_profile_registered_passkeys_list()
@@ -1089,6 +1032,13 @@ class mf_passkeys
 		//$this->add_record('register', $user_id, $security_key_name, null, $data['aaguid'], $webauthn_id);
 
 		wp_send_json_success([]);
+	}
+
+	function remove_by_user_id($id, $user_id)
+	{
+		global $wpdb;
+
+		return $wpdb->delete($wpdb->base_prefix."secure_passkeys_webauthns", ['id' => $id, 'user_id' => $user_id]);
 	}
 
 	function remove_passkey()
@@ -1265,7 +1215,6 @@ class mf_passkeys
 				'domain_column' => __("Domain", 'lang_passkeys'),
 				'last_used_column' => __("Last Used", 'lang_passkeys'),
 				'created_at_column' => __("Created Date", 'lang_passkeys'),
-				'actions_column' => __("Actions", 'lang_passkeys'),
 				'activate' => __("Activate", 'lang_passkeys'),
 				'deactivate' => __("Deactivate", 'lang_passkeys'),
 				'delete' => __("Delete", 'lang_passkeys'),

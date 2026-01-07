@@ -70,7 +70,7 @@ const app = createApp({
 		secure_passkeys_params?.i18n?.delete_message ??
 		"Are you sure you want to delete the passkey?";
 		if (!confirm(message)) {
-		return;
+			return;
 		}
 		var that = this;
 		this.deletingPasskey = true;
@@ -90,8 +90,8 @@ const app = createApp({
 			that.deletingPasskey = false;
 			that.deletingId = 0;
 			if (data.success) {
-			that.successMessage = data.data.message;
-			that.loadPasskeys();
+				that.successMessage = data.data.message;
+				that.loadPasskeys();
 			} else {
 			if (data.data.missing_nonce) {
 				that.missingNonce = true;
@@ -120,86 +120,92 @@ const app = createApp({
 		this.addingPasskey = true;
 
 		try {
-		const options = await this.getPasskeyOptions();
+			const options = await this.getPasskeyOptions();
 
-		const credential = await navigator.credentials.create({
-			publicKey: options,
-		});
+			const credential = await navigator.credentials.create({
+				publicKey: options,
+			});
 
-		const data = this.preparePasskeyData(credential);
+			const data = this.preparePasskeyData(credential);
 
-		await this.postPasskeyData(data);
+			await this.postPasskeyData(data);
 
-		this.savedOptions = data;
-		this.addingPasskey = false;
+			this.savedOptions = data;
+			this.addingPasskey = false;
 		} catch (error) {
-		if (error instanceof DOMException && error.name === "NotAllowedError") {
-			this.errorMessage = this.i18n.failed_cancel_register;
-		} else if (
-			error instanceof DOMException &&
-			error.name === "InvalidStateError"
-		) {
-			this.errorMessage = this.i18n.passkey_already_registered;
-		} else if (
-			error instanceof DOMException &&
-			error.name === "AbortError"
-		) {
-			this.errorMessage = this.i18n.cancelled_register;
-		} else if (error.response && error.response.data) {
-			this.errorMessage = error.response.data.message;
-		} else {
-			this.errorMessage = this.i18n.failed_register + " (profile -> addingPasskey)";
-		}
+			if (error instanceof DOMException && error.name === "NotAllowedError") {
+				this.errorMessage = this.i18n.failed_cancel_register;
+			} else if (
+				error instanceof DOMException &&
+				error.name === "InvalidStateError"
+			) {
+				this.errorMessage = this.i18n.passkey_already_registered;
+			} else if (
+				error instanceof DOMException &&
+				error.name === "AbortError"
+			) {
+				this.errorMessage = this.i18n.cancelled_register;
+			} else if (error.response && error.response.data) {
+				this.errorMessage = error.response.data.message;
+			} else {
+				this.errorMessage = this.i18n.failed_register + " (profile -> addingPasskey)";
+			}
 
-		this.addingPasskey = false;
+			this.addingPasskey = false;
 		}
 	},
 
 	async createPasskey() {
 		this.errorMessage = null;
+
 		if (this.savedOptions === null) {
-		this.showSecurityKeyName = false;
-		return;
+			this.showSecurityKeyName = false;
+			return;
 		}
 		if (this.invaldInput) {
-		return;
+			return;
 		}
-		if (
-		this.securityKeyNameInput?.trim() === "" ||
-		this.securityKeyNameInput?.trim()?.length < 3 ||
-		this.securityKeyNameInput?.trim()?.length > 30
-		) {
-		this.inputError = this.i18n.failed_save_passkey_name_length;
-		this.invaldInput = true;
-		return;
+		
+		if(this.securityKeyNameInput?.trim() === "" || this.securityKeyNameInput?.trim()?.length < 3 || this.securityKeyNameInput?.trim()?.length > 30)
+		{
+			this.inputError = this.i18n.failed_save_passkey_name_length;
+			this.invaldInput = true;
+			return;
 		}
 
 		this.inputError = "";
 		this.invaldInput = false;
 		this.creatingPasskey = true;
-		try {
-		let data = this.savedOptions;
-		if (this.securityKeyNameInput) {
-			data.security_key_name = this.securityKeyNameInput;
-		}
 
-		await this.postPasskeyData(data);
+		try
+		{
+			let data = this.savedOptions;
 
-		this.addingPasskey = false;
-		this.securityKeyNameInput = "";
-		} catch (error) {
-		if (error.response && error.response.data) {
-			this.errorMessage = error.response.data.message;
-			if (error.response.data.errors) {
-			this.errorMessage = Object.values(error.response.data.errors).join(
-				", "
-			);
+			if(this.securityKeyNameInput)
+			{
+				data.security_key_name = this.securityKeyNameInput;
 			}
-		} else {
-			this.errorMessage = this.i18n.failed_register + " (profile -> createPasskey)";
-		}
 
-		this.creatingPasskey = false;
+			await this.postPasskeyData(data);
+
+			this.addingPasskey = false;
+			this.securityKeyNameInput = "";
+		}
+		
+		catch (error)
+		{
+			if (error.response && error.response.data) {
+				this.errorMessage = error.response.data.message;
+				if (error.response.data.errors) {
+				this.errorMessage = Object.values(error.response.data.errors).join(
+					", "
+				);
+				}
+			} else {
+				this.errorMessage = this.i18n.failed_register + " (profile -> createPasskey)";
+			}
+
+			this.creatingPasskey = false;
 		}
 	},
 	cancelPasskey() {
