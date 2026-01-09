@@ -159,19 +159,7 @@ class mf_passkeys
 	function __construct()
 	{
 		// Needed for login
-		spl_autoload_register([$this, 'autoload']);
-
-		//$this->folder_loader(SECURE_PASSKEYS_PLUGIN_DIR.'/src/includes', SECURE_PASSKEYS_PLUGIN_DIR);
-	}
-
-	function autoload($class)
-	{
-		$file = $this->get_class_file($class);
-
-		if(file_exists($file))
-		{
-			require_once($file);
-		}
+		spl_autoload_register([$this, 'get_class_file']);
 	}
 
 	function get_class_file($class)
@@ -187,33 +175,13 @@ class mf_passkeys
 
 		$class_file = str_replace('/', DIRECTORY_SEPARATOR, $class_file);
 
-		return SECURE_PASSKEYS_PLUGIN_DIR.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$class_file.'.php';
-	}
+		$file = SECURE_PASSKEYS_PLUGIN_DIR.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$class_file.'.php';
 
-	/*function folder_loader($folder, $plugin_dir)
-	{
-		$classes = [];
-
-		foreach(glob($folder.'/*.php') as $file)
+		if(file_exists($file))
 		{
-			$path = str_replace([dirname($plugin_dir), '/src'], '', $file);
-			$path = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
-
-			$class = str_replace(' ', '_', ucwords(str_replace('-', ' ', $path)));
-			$parts = explode('\\', $class);
-
-			$class = implode('\\', array_map('ucfirst', $parts));
-			$class = rtrim($class, '.php');
-			$class = ltrim($class, '\\');
-
-			if(class_exists($class))
-			{
-				$classes[] = new $class();
-			}
+			require_once($file);
 		}
-
-		return $classes;
-	}*/
+	}
 
 	function convert_aaguid_to_hex($bin_aaguid)
 	{
@@ -271,7 +239,7 @@ class mf_passkeys
 
 		$data = $this->get_by_credential_id($credential_id);
 
-		if(is_null($data)) // || !$data->is_active
+		if(is_null($data))
 		{
 			throw new Exception('Invalid credentials');
 		}
@@ -320,6 +288,21 @@ class mf_passkeys
 		return trim($full_name);
 	}
 
+	function authenticator_selection()
+	{
+		return [
+			'residentKey' => 'required',
+			'userVerification' => 'required',
+		];
+	}
+
+	function is_authenticator_selection_enabled()
+	{
+		$value = $this->authenticator_selection();
+
+		return (!empty($value) && is_array($value));
+	}
+
 	function do_enable_options_action($user_id, $challenge)
 	{
 		global $wpdb;
@@ -358,7 +341,7 @@ class mf_passkeys
 
 		if($this->is_authenticator_selection_enabled())
 		{
-			$options['authenticatorSelection'] = $this->get_authenticator_selection();
+			$options['authenticatorSelection'] = $this->authenticator_selection();
 		}
 
 		$credential_ids = $wpdb->get_results($wpdb->prepare("SELECT credential_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d", $user_id));
@@ -429,26 +412,6 @@ class mf_passkeys
 		];
 	}
 
-	function authenticator_selection()
-	{
-		return [
-			'residentKey' => 'required',
-			'userVerification' => 'required',
-		];
-	}
-
-	function is_authenticator_selection_enabled()
-	{
-		$value = $this->authenticator_selection();
-
-		return (!empty($value) && is_array($value));
-	}
-
-	function get_authenticator_selection()
-	{
-		return $this->authenticator_selection();
-	}
-
 	function get_raw_credential_id($credential_id)
 	{
 		return base64_encode($this->base64url_decode($credential_id));
@@ -460,18 +423,12 @@ class mf_passkeys
 		$ip_address = apply_filters('get_current_visitor_ip', "unknown");
 		$acceptLanguage = sanitize_text_field(wp_unslash($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'unknown'));
 
-		$fingerprintData = $userAgent.'|'.$ip_address.'|'.$acceptLanguage;
-
-		$fingerprintHash = hash('sha256', $fingerprintData);
-
-		return $fingerprintHash;
+		return hash('sha256', $userAgent.'|'.$ip_address.'|'.$acceptLanguage);
 	}
 
 	function generate_challenge($challenge_type, $userId = null)
 	{
 		global $wpdb;
-
-		$fingerprint = $this->generate_fingerprint();
 
 		$minutes = 5;
 
@@ -492,7 +449,7 @@ class mf_passkeys
 					'blog_id' => $wpdb->blogid,
 					'challenge_type' => $challenge_type,
 					'challenge' => $challenge,
-					'fingerprint' => $fingerprint,
+					'fingerprint' => $this->generate_fingerprint(),
 					'expired_at' => $expire_date,
 					'created_at' => current_time('mysql'),
 					'updated_at' => current_time('mysql')
@@ -508,10 +465,15 @@ class mf_passkeys
 		return $challenge;
 	}
 
+	function get_by_challenge_not_used($challenge)
+	{
+		global $wpdb;
+
+		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE challenge = %s AND used_at IS NULL", $challenge));
+	}
+
 	function verify_challenge_or_throw_exception($challenge, $challenge_type)
 	{
-		$fingerprint = $this->generate_fingerprint();
-
 		$record = $this->get_by_challenge_not_used($challenge);
 
 		if(is_null($record))
@@ -524,7 +486,7 @@ class mf_passkeys
 			throw new Exception('Invalid challenge type');
 		}
 
-		if($record->fingerprint !== $fingerprint)
+		if($record->fingerprint !== $this->generate_fingerprint())
 		{
 			throw new Exception('Invalid fingerprint');
 		}
@@ -549,13 +511,6 @@ class mf_passkeys
 		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE challenge = %s", $challenge));
 
 		return !is_null($record);
-	}
-
-	function get_by_challenge_not_used($challenge)
-	{
-		global $wpdb;
-
-		return $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE challenge = %s AND used_at IS NULL", $challenge));
 	}
 
 	// Admin
@@ -626,44 +581,6 @@ class mf_passkeys
 	{
 		return SECURE_PASSKEYS_PLUGIN_URL.'assets/admin/css/'.$file;
 	}
-
-	function include_vue_adminarea_file($template, $data = [], $load = false)
-	{
-		$file = realpath(SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/admin/'.$template.'.php');
-
-		if(file_exists(realpath($file)))
-		{
-			extract($data);
-
-			if(!$load)
-			{
-				return include realpath($file);
-			}
-
-			ob_start();
-			require realpath($file);
-			return ob_get_clean();
-		}
-
-		return '';
-	}
-
-	function get_page_resource_key($resources, $hook)
-	{
-		$found = false;
-
-		foreach(array_keys($resources) as $key)
-		{
-			$found = (strpos($hook, $key) !== false);
-
-			if($found)
-			{
-				break;
-			}
-		}
-
-		return ($found ? $key : '');
-	}
 	####################
 
 	// Frontend
@@ -672,38 +589,44 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		if(is_user_logged_in())
+		if(!is_user_logged_in())
 		{
-			return;
+			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE blog_id = %d LIMIT 0, 1", $wpdb->blogid));
+
+			if($wpdb->num_rows > 0)
+			{
+				do_action('load_notification');
+
+				mf_enqueue_style('secure-passkeys-login-script', $this->get_css_frontend_assets_url('login.css'));
+
+				$file = $this->get_js_frontend_assets_url('webauthn.login.js');
+				$version = get_source_version($file);
+
+				wp_register_script('secure-passkeys-login-script', $file, [], $version, true);
+				wp_localize_script('secure-passkeys-login-script', 'secure_passkeys_object', [
+					'url' => admin_url('admin-ajax.php'),
+					'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
+					'i18n' => [
+						'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
+						'failed_load_options' => __("Failed to fetch passkey login options.", 'lang_passkeys'),
+						'failed_login' => __("Passkey authentication failed. Please try again if you want to proceed.", 'lang_passkeys'),
+						'cancelled_login' => __("Passkey authentication cancelled. Please try again if you want to proceed.", 'lang_passkeys'),
+						'success_login' => __("You have successfully logged in with Passkey. Redirecting...", 'lang_passkeys'),
+					]
+				]);
+				wp_enqueue_script('secure-passkeys-login-script');
+
+				echo "<div class='secure-passkey-login-wrapper wp-block-button'>
+					<p>".__("...or login safer with...", 'lang_passkeys')."</p>
+					<div class='notification errorMessage'><div class='notice notice-error error'><p></p></div></div>
+					<div class='notification successMessage'><div class='notice notice-success updated'><p></p></div></div>
+					<button class='button wp-block-button__link'>
+						<span class='spinnerText'>".__("Logging in via Passkey...", 'lang_passkeys')."</span>
+						<span class='buttonText'>".__("Passkey", 'lang_passkeys')."</span>
+					</button>
+				</div>";
+			}
 		}
-
-		$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE blog_id = %d LIMIT 0, 1", $wpdb->blogid));
-
-		if($wpdb->num_rows == 0)
-		{
-			return;
-		}
-
-		mf_enqueue_style('secure-passkeys-login-script', $this->get_css_frontend_assets_url('login.css'));
-
-		$file = $this->get_js_frontend_assets_url('webauthn.login.js');
-		$version = get_source_version($file);
-
-		wp_register_script('secure-passkeys-login-script', $file, [], $version, true);
-		wp_localize_script('secure-passkeys-login-script', 'secure_passkeys_object', [
-			'url' => admin_url('admin-ajax.php'),
-			'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
-			'i18n' => [
-				'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
-				'failed_load_options' => __("Failed to fetch passkey login options.", 'lang_passkeys'),
-				'failed_login' => __("Passkey authentication failed. Please try again if you want to proceed.", 'lang_passkeys'),
-				'cancelled_login' => __("Passkey authentication cancelled. Please try again if you want to proceed.", 'lang_passkeys'),
-				'success_login' => __("You have successfully logged in with Passkey. Redirecting...", 'lang_passkeys'),
-			]
-		]);
-		wp_enqueue_script('secure-passkeys-login-script');
-
-		return $this->include_view_frontend_file('login');
 	}
 
 	function check_is_admin_request()
@@ -738,46 +661,6 @@ class mf_passkeys
 		{
 			wp_send_json_error($message);
 		}
-	}
-
-	function include_view_frontend_file($template, $data = [], $load = false)
-	{
-		$theme = $default_theme = 'default';
-
-		$theme_paths = $this->get_frontend_themes_paths();
-
-		$theme_path = $theme_paths[$theme];
-		$default_path = ($theme_paths['default'] ?? '');
-
-		$file_path = realpath($theme_path.'/'.$template.'.php');
-
-		if(empty($file_path))
-		{
-			$file_path = realpath($default_path.'/'.$template.'.php');
-		}
-
-		$file = $file_path;
-
-		if(!empty($file) && file_exists(realpath($file)))
-		{
-			extract($data);
-
-			if(!$load)
-			{
-				return include realpath($file);
-			}
-
-			ob_start();
-			require realpath($file);
-			return ob_get_clean();
-		}
-
-		return '';
-	}
-
-	function get_frontend_themes_paths()
-	{
-		return ['default' => SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/frontend'];
 	}
 
 	function get_js_frontend_assets_url($file_name)
@@ -918,7 +801,7 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d ORDER BY created_at DESC", $user_id)); //, is_active
+		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d ORDER BY created_at DESC", $user_id));
 	}
 
 	function get_profile_registered_passkeys_list()
@@ -934,7 +817,6 @@ class mf_passkeys
 		array_map(function($record)
 		{
 			$record->blog_name = (is_multisite() ? get_blog_option($record->blog_id, 'blogname') : __("This Site", 'lang_passkeys'));
-			//$record->is_active = intval($record->is_active);
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
 		}, $records);
@@ -953,7 +835,6 @@ class mf_passkeys
 		array_map(function ($record)
 		{
 			$record->blog_name = get_blog_option($record->blog_id, 'blogname');
-			//$record->is_active = intval($record->is_active);
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
 		}, $records);
@@ -1142,6 +1023,23 @@ class mf_passkeys
 		}
 	}
 
+	function get_page_resource_key($resources, $hook)
+	{
+		$found = false;
+
+		foreach(array_keys($resources) as $key)
+		{
+			$found = (strpos($hook, $key) !== false);
+
+			if($found)
+			{
+				break;
+			}
+		}
+
+		return ($found ? $key : '');
+	}
+
 	function show_user_profile()
 	{
 		$resources = [];
@@ -1180,7 +1078,9 @@ class mf_passkeys
 
 			$user_id = intval($current_screen->id === 'profile' ? get_current_user_id() : intval($_GET['user_id'] ?? 0));
 
-			$content = $this->include_vue_adminarea_file('profile', [], true);
+			ob_start();
+				require realpath(SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/admin/profile.php');
+			$content = ob_get_clean();
 		}
 
 		else
@@ -1189,7 +1089,9 @@ class mf_passkeys
 
 			do_action('load_table_attr');
 
-			$content = $this->include_vue_adminarea_file('widget_profile', [], true);
+			ob_start();
+				require realpath(SECURE_PASSKEYS_PLUGIN_DIR.'/src/views/admin/widget_profile.php');
+			$content = ob_get_clean();
 		}
 
 		$scripts = [

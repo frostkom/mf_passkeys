@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.8
+Version: 1.4.9
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -132,7 +132,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			PRIMARY KEY (id),
 			UNIQUE KEY credential_id (credential_id),
 			KEY user_id (user_id)
-		) DEFAULT CHARSET=".$default_charset); //is_active TINYINT(1) NOT NULL DEFAULT '1',
+		) DEFAULT CHARSET=".$default_charset);
 
 		$arr_update_column[$wpdb->base_prefix."secure_passkeys_webauthns"] = array(
 			'is_active' => "ALTER TABLE [table] DROP COLUMN [column]", //260105

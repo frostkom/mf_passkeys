@@ -1,7 +1,3 @@
-<?php
-
-defined('ABSPATH') || exit;
-?>
 <div class="secure-passkeys">
 	<div v-if="errorMessage" class="error">
 		<p>{{ errorMessage }}</p>
@@ -18,46 +14,22 @@ defined('ABSPATH') || exit;
 	@click.prevent="addPasskey"
 	@keydown.enter.prevent
 	>
-	<template v-if="addingPasskey">
-		<i class="spinner is-active spin spinner-button"></i>
-		{{ i18n.add_waiting_button }}
-	</template>
-	<template v-else-if="waitingAddPasskey">
-		<i class="spinner is-active spin spinner-button"></i>
-		{{ i18n.add_passkey_button }}
-	</template>
-	<template v-else>
-		<span
-		class="dashicons dashicons-plus"
-		style="vertical-align: middle"
-		></span>
-		{{ i18n.add_passkey_button }}
-	</template>
-	</button>
-
-	<!--<div
-	:class="[
-			{
-				'your-passkeys-text': is_owner,
-				'your-passkeys-text remove-margin': !is_owner,
-			},
-		]"
-	>
-		<template v-if="is_owner">
-			{{ i18n.your_passkeys }}
-		</template>
-		<template v-else>
-			{{ i18n.user_passkeys }}
-		</template>
-
-		<template v-if="isLoading">
+		<template v-if="addingPasskey">
 			<i class="spinner is-active spin spinner-button"></i>
+			{{ i18n.add_waiting_button }}
+		</template>
+		<template v-else-if="waitingAddPasskey">
+			<i class="spinner is-active spin spinner-button"></i>
+			{{ i18n.add_passkey_button }}
 		</template>
 		<template v-else>
-			<span>(<strong>{{ list?.length ?? 0 }}</strong>)</span>
+			<span
+			class="dashicons dashicons-plus"
+			style="vertical-align: middle"
+			></span>
+			{{ i18n.add_passkey_button }}
 		</template>
-	</div>-->
-
+	</button>
 	<table class="wp-list-table widefat striped">
 		<thead>
 			<tr>
@@ -113,7 +85,7 @@ defined('ABSPATH') || exit;
 			</tr>
 			<tr v-if="list.length == 0 && !isLoading">
 				<td :colspan="is_owner || has_access ? 6 : 5" class="center">
-				{{ i18n.no_records_found }}
+					{{ i18n.no_records_found }}
 				</td>
 			</tr>
 			<tr v-if="isLoading">
@@ -122,10 +94,10 @@ defined('ABSPATH') || exit;
 				class="center warning"
 				style="text-align: center"
 				>
-				<i
-					class="spinner is-active spin"
-					style="text-align: center; margin: auto"
-				></i>
+					<i
+						class="spinner is-active spin"
+						style="text-align: center; margin: auto"
+					></i>
 				</td>
 			</tr>
 		</tbody>
