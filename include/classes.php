@@ -344,7 +344,7 @@ class mf_passkeys
 			$options['authenticatorSelection'] = $this->authenticator_selection();
 		}
 
-		$credential_ids = $wpdb->get_results($wpdb->prepare("SELECT credential_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d", $user_id));
+		$credential_ids = $wpdb->get_results($wpdb->prepare("SELECT credential_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d'", $user_id));
 
 		$excludeCredentials = array_map(function ($item)
 		{
@@ -366,7 +366,7 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND credential_id = %s", $id, $credential_id));
+		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' AND credential_id = %s", $id, $credential_id));
 
 		return !is_null($record);
 	}
@@ -375,7 +375,7 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND security_key_name = %s", $id, $security_key_name));
+		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' AND security_key_name = %s", $id, $security_key_name));
 
 		return !is_null($record);
 	}
@@ -591,7 +591,7 @@ class mf_passkeys
 
 		if(!is_user_logged_in())
 		{
-			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE blog_id = %d LIMIT 0, 1", $wpdb->blogid));
+			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE blog_id = '%d' LIMIT 0, 1", $wpdb->blogid));
 
 			if($wpdb->num_rows > 0)
 			{
@@ -766,7 +766,7 @@ class mf_passkeys
 		$id = intval($_POST['id'] ?? 0);
 		$admin_id = get_current_user_id();
 
-		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE id = %d", $id));
+		$record = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE id = '%d'", $id));
 
 		$user_id = intval($record->user_id ?? 0);
 
@@ -801,7 +801,7 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d ORDER BY created_at DESC", $user_id));
+		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' ORDER BY created_at DESC", $user_id));
 	}
 
 	function get_profile_registered_passkeys_list()
@@ -931,7 +931,7 @@ class mf_passkeys
 		$id = intval($_POST['id'] ?? 0);
 		$user_id = get_current_user_id();
 
-		$passkey = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE id = %d", $id));
+		$passkey = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE id = '%d'", $id));
 
 		try
 		{
@@ -967,8 +967,8 @@ class mf_passkeys
 
 		if($obj_cron->is_running == false)
 		{
-			$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE DATEDIFF(NOW(), created_at) >= %d", 30));
-			//$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_logs WHERE DATEDIFF(NOW(), created_at) >= %d", 30));
+			$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE DATEDIFF(NOW(), created_at) >= '%d'", 30));
+			//$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_logs WHERE DATEDIFF(NOW(), created_at) >= '%d'", 30));
 
 			mf_uninstall_plugin(array(
 				'options' => array('registration_maximum_passkeys_enabled', 'registration_maximum_passkeys_per_user', 'excluded_roles_registration_login', 'auto_generate_security_key_name', 'display_passkey_theme', 'display_passkey_login_wp_enabled', 'display_passkey_edit_user_enabled', 'show_enable_passkeys_notice', 'display_passkey_login_woocommerce_enabled', 'display_passkey_login_memberpress_enabled', 'display_passkey_login_edd_enabled', 'display_passkey_login_ultimate_member_enabled', 'display_passkey_users_list_enabled', 'registration_exclude_credentials_enabled', 'registration_timeout', 'registration_user_verification_enabled', 'login_timeout', 'login_user_verification', 'challenge_cleanup_days', 'log_cleanup_days'),
@@ -983,7 +983,7 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d", $user_id));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d'", $user_id));
 	}
 
 	function manage_users_columns($columns)
@@ -1000,7 +1000,7 @@ class mf_passkeys
 		switch($column_name)
 		{
 			case 'secure_passkeys':
-				$value = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d GROUP BY user_id", $user_id));
+				$value = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' GROUP BY user_id", $user_id));
 			break;
 		}
 
@@ -1013,7 +1013,7 @@ class mf_passkeys
 
 		$user_id = get_current_user_id();
 
-		$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND blog_id = %d LIMIT 0, 1", $user_id, $wpdb->blogid));
+		$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' AND blog_id = '%d' LIMIT 0, 1", $user_id, $wpdb->blogid));
 
 		if($wpdb->num_rows == 0)
 		{
@@ -1170,7 +1170,7 @@ class mf_passkeys
 
 		if(isset($user_data->ID))
 		{
-			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = %d AND blog_id = %d LIMIT 0, 1", $user_data->ID, $wpdb->blogid));
+			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' AND blog_id = '%d' LIMIT 0, 1", $user_data->ID, $wpdb->blogid));
 
 			if($wpdb->num_rows == 0)
 			{
