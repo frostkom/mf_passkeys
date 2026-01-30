@@ -609,7 +609,7 @@ class mf_passkeys
 					'i18n' => [
 						'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
 						'failed_load_options' => __("Failed to fetch passkey login options.", 'lang_passkeys'),
-						'failed_login' => __("Passkey authentication failed. Please try again if you want to proceed.", 'lang_passkeys'),
+						'failed_login' => __("I could not find a passkey for your account. Are you sure that you have created one? Login with e-mail and password and create a passkey.", 'lang_passkeys'),
 						'cancelled_login' => __("Passkey authentication cancelled. Please try again if you want to proceed.", 'lang_passkeys'),
 						'success_login' => __("You have successfully logged in with Passkey. Redirecting...", 'lang_passkeys'),
 					]
