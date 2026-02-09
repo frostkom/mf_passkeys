@@ -1164,7 +1164,7 @@ class mf_passkeys
 		</div>";
 	}
 
-	function filter_login_redirect($redirect_to, $user_data)
+	/*function filter_login_redirect($redirect_to, $user_data)
 	{
 		global $wpdb;
 
@@ -1184,5 +1184,5 @@ class mf_passkeys
 		}
 
 		return $redirect_to;
-	}
+	}*/
 }
