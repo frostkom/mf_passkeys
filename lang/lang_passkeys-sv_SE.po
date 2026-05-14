@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-30 10:06+0100\n"
+"POT-Creation-Date: 2026-05-14 21:11+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,264 +15,272 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../include/classes.php:524
+#: ../include/classes.php:519
 msgid "You do not have permission to make this request"
 msgstr "Du har inte behörighet att utföra detta"
 
-#: ../include/classes.php:542
-#: ../include/classes.php:652
+#: ../include/classes.php:537
+#: ../include/classes.php:647
 msgid "The request method must be POST"
 msgstr "Hämtningsmetoden behöver vara med POST"
 
-#: ../include/classes.php:547
-#: ../include/classes.php:657
+#: ../include/classes.php:542
+#: ../include/classes.php:652
 msgid "Token mismatch, please refresh the page"
 msgstr "Något gick fel. Var vänlig ladda om sidan"
 
-#: ../include/classes.php:610
-#: ../include/classes.php:1145
+#: ../include/classes.php:605
+#: ../include/classes.php:1233
 msgid "Your browser does not support passkeys. Try updating your browser or using another one."
 msgstr "Din webbläsare har inte stöd för lösenordsnycklar"
 
-#: ../include/classes.php:611
+#: ../include/classes.php:606
 msgid "Failed to fetch passkey login options."
 msgstr "Jag misslyckades med att hämta inloggningsinställningar"
 
-#: ../include/classes.php:612
+#: ../include/classes.php:607
 msgid "I could not find a passkey for your account. Are you sure that you have created one? Login with e-mail and password and create a passkey."
 msgstr "Jag kunde inte hitta en lösenordsnyckel för ditt konto. Är du säker på att du har skapat en? Logga in med din e-post och lösenord för att skapa en lösenordsnyckel."
 
-#: ../include/classes.php:613
+#: ../include/classes.php:608
 msgid "Passkey authentication cancelled. Please try again if you want to proceed."
 msgstr "Autenticering av lösenordsnyckeln avbröts"
 
-#: ../include/classes.php:614
+#: ../include/classes.php:609
 msgid "You have successfully logged in with Passkey. Redirecting..."
 msgstr "Inloggningen med lösenordsnyckel lyckades. Du skickas vidare..."
 
-#: ../include/classes.php:620
+#: ../include/classes.php:615
 msgid "...or login safer with..."
 msgstr "...eller logga in säkrare med..."
 
-#: ../include/classes.php:624
+#: ../include/classes.php:619
 msgid "Logging in via Passkey..."
 msgstr "Loggar in med lösenordsnyckel..."
 
-#: ../include/classes.php:625
+#: ../include/classes.php:620
 msgid "Passkey"
 msgstr "Lösenordsnyckel"
 
-#: ../include/classes.php:743
+#: ../include/classes.php:719
 msgid "Passkey authentication failed. Please try again."
 msgstr "Autenticering misslyckades. Försök igen."
 
-#: ../include/classes.php:777
-#: ../include/classes.php:784
+#: ../include/classes.php:751
+#: ../include/classes.php:758
 msgid "The passkey cannot be deleted"
 msgstr "Lösenordsnyckeln kan inte raderas"
 
-#: ../include/classes.php:797
+#: ../include/classes.php:769
 msgid "The passkey deleted successfully"
 msgstr "Lösenordsnyckeln raderades"
 
-#: ../include/classes.php:819
+#: ../include/classes.php:783
+msgid "This device"
+msgstr "Denna enhet"
+
+#: ../include/classes.php:908
 msgid "This Site"
 msgstr "Denna webbplats"
 
-#: ../include/classes.php:885
+#: ../include/classes.php:976
 msgid "This passkey is already registered. Please use a different one."
 msgstr "Lösenordsnyckeln är redan registrerad."
 
-#: ../include/classes.php:890
-#: ../include/classes.php:908
+#: ../include/classes.php:981
+#: ../include/classes.php:1000
 msgid "Failed to register the passkey. Please try again later."
 msgstr "Registreringen misslyckades. Försök igen senare."
 
-#: ../include/classes.php:948
+#: ../include/classes.php:1038
 msgid "You do not have permission to remove this passkey."
 msgstr "Du har inte behörighet att radera denna lösenordsnyckel"
 
-#: ../include/classes.php:991
+#: ../include/classes.php:1078
 msgid "Passkeys"
 msgstr "Lösenordsnycklar"
 
-#: ../include/classes.php:1020
+#: ../include/classes.php:1107
 #, php-format
 msgid "%sUse your fingerprint or other biometric methods with passkeys to securely and conveniently verify your login. %s in your profile settings."
 msgstr "%sAnvänd ditt fingeravtryck eller andra biometriska metoder med lösenordsnycklar för att logga in säkert och snabbt. %s i din profil."
 
-#: ../include/classes.php:1020
+#: ../include/classes.php:1107
 msgid "Simplify your sign-in"
 msgstr "Förenkla din inloggning"
 
-#: ../include/classes.php:1020
+#: ../include/classes.php:1107
 msgid "Enable passkeys"
 msgstr "Aktivera lösenordsnycklar"
 
-#: ../include/classes.php:1068
-#: ../include/classes.php:1128
+#: ../include/classes.php:1155
+#: ../include/classes.php:1216
 msgid "Are you sure you want to delete the passkey?"
 msgstr "Är du säker på att du vill radera lösenordsnyckeln?"
 
-#: ../include/classes.php:1069
-#: ../include/classes.php:1129
+#: ../include/classes.php:1156
+#: ../include/classes.php:1217
 msgid "Are you sure you want to activate the passkey?"
 msgstr "Är du säker på att du vill aktivera lösenordsnyckeln?"
 
-#: ../include/classes.php:1070
-#: ../include/classes.php:1130
+#: ../include/classes.php:1157
+#: ../include/classes.php:1218
 msgid "Are you sure you want to deactivate the passkey?"
 msgstr "Är du säker på att du vill inaktivera lösenordsnyckeln?"
 
-#: ../include/classes.php:1115
+#: ../include/classes.php:1202
 msgid "Passwordless sign-in with passkeys"
 msgstr "Lösenordsfri inloggning med lösenordsnycklar"
 
-#: ../include/classes.php:1116
+#: ../include/classes.php:1203
 msgid "Passkeys offer a secure and user-friendly authentication method, serving as an alternative or complement to traditional methods. They validate your identity through touch, facial recognition, device passwords, or PINs, and can effectively replace passwords."
 msgstr "Lösenordsnycklar erbjuder en säker och användarvänlig autentiseringsmetod, som fungerar som ett alternativ eller komplement till traditionella metoder. Den validerar din identitet genom beröring, ansiktsigenkänning, enhetslösenord eller PIN-koder, och kan effektivt ersätta lösenord."
 
-#: ../include/classes.php:1117
+#: ../include/classes.php:1204
 msgid "Domain"
 msgstr "Domän"
 
-#: ../include/classes.php:1118
+#: ../include/classes.php:1205
+msgid "Device"
+msgstr "Enhet"
+
+#: ../include/classes.php:1206
 msgid "Last Used"
 msgstr "Senast använd"
 
-#: ../include/classes.php:1119
+#: ../include/classes.php:1207
 msgid "Created Date"
 msgstr "Skapad"
 
-#: ../include/classes.php:1120
+#: ../include/classes.php:1208
 msgid "Activate"
 msgstr "Aktivera"
 
-#: ../include/classes.php:1121
+#: ../include/classes.php:1209
 msgid "Deactivate"
 msgstr "Inaktivera"
 
-#: ../include/classes.php:1122
+#: ../include/classes.php:1210
 msgid "Delete"
 msgstr "Radera"
 
-#: ../include/classes.php:1123
+#: ../include/classes.php:1211
 msgid "Processing..."
 msgstr "Bearbetar..."
 
-#: ../include/classes.php:1124
+#: ../include/classes.php:1212
 msgid "Deleting..."
 msgstr "Raderar..."
 
-#: ../include/classes.php:1125
+#: ../include/classes.php:1213
 msgid "No records found."
 msgstr "Inga händelser hittade"
 
-#: ../include/classes.php:1126
+#: ../include/classes.php:1214
 msgid "Loading passkeys..."
 msgstr "Laddar lösenordsnycklar..."
 
-#: ../include/classes.php:1127
+#: ../include/classes.php:1215
 msgid "An unexpected error occurred."
 msgstr "Ett oväntat fel inträffade"
 
-#: ../include/classes.php:1131
+#: ../include/classes.php:1219
 msgid "Failed to fetch passkeys."
 msgstr "Jag kunde inte hämta nycklar"
 
-#: ../include/classes.php:1133
+#: ../include/classes.php:1221
 msgid "out of"
 msgstr "av"
 
-#: ../include/classes.php:1134
+#: ../include/classes.php:1222
 msgid "Add Passkey"
 msgstr "Lägg till lösenordsnyckel"
 
-#: ../include/classes.php:1135
+#: ../include/classes.php:1223
 msgid "Add"
 msgstr "Lägg till"
 
-#: ../include/classes.php:1136
+#: ../include/classes.php:1224
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../include/classes.php:1137
+#: ../include/classes.php:1225
 msgid "Your Passkeys"
 msgstr "Dina lösenordsnycklar"
 
-#: ../include/classes.php:1138
+#: ../include/classes.php:1226
 msgid "User Passkeys"
 msgstr "Användarnycklar"
 
-#: ../include/classes.php:1139
+#: ../include/classes.php:1227
 msgid "Waiting for input from browser interaction..."
 msgstr "Jag väntar på svar från webbläsaren..."
 
-#: ../include/classes.php:1140
+#: ../include/classes.php:1228
 msgid "Added"
 msgstr "Tillagd"
 
-#: ../include/classes.php:1141
+#: ../include/classes.php:1229
 msgid "Last used"
 msgstr "Senast använd"
 
-#: ../include/classes.php:1142
+#: ../include/classes.php:1230
 msgid "Name your security key"
 msgstr "Ge ett namn till din nyckel"
 
-#: ../include/classes.php:1143
+#: ../include/classes.php:1231
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: ../include/classes.php:1144
+#: ../include/classes.php:1232
 msgid "Active"
 msgstr "Aktiv"
 
-#: ../include/classes.php:1146
+#: ../include/classes.php:1234
 msgid "An error occurred while loading passkeys."
 msgstr "Ett fel inträffade vid laddning av lösenordsnycklar"
 
-#: ../include/classes.php:1147
+#: ../include/classes.php:1235
 msgid "Passkey registration failed or cancelled."
 msgstr "Registrering av lösenordsnyckel gick fel eller avbröts"
 
-#: ../include/classes.php:1148
+#: ../include/classes.php:1236
 msgid "The security key name must be between 3 and 30 characters long."
 msgstr "Nyckelnamnet behöver innehålla mellan 3 och 30 tecken."
 
-#: ../include/classes.php:1149
+#: ../include/classes.php:1237
 msgid "You already registered this device. You don't have to register it again."
 msgstr "Du har redan registrerat denna enhet så du behöver inte göra det igen"
 
-#: ../include/classes.php:1151
+#: ../include/classes.php:1239
 msgid "Passkey registration cancelled. Please try again if you want to proceed."
 msgstr "Registreringen av lösenordsnyckel avbröts"
 
-#: ../include/classes.php:1152
+#: ../include/classes.php:1240
 msgid "Are you sure you want to delete your passkey?"
 msgstr "Är du säker på att du vill radera lösenordsnyckeln?"
 
-#: ../include/classes.php:1153
+#: ../include/classes.php:1241
 msgid "Passkey successfully deleted."
 msgstr "Lösenordsnyckeln raderades"
 
-#: ../include/classes.php:1154
+#: ../include/classes.php:1242
 msgid "Failed to fetch passkey registration options."
 msgstr "Jag kunde inte hämta alternativen för registrering av lösenordsnycklar"
 
-#: ../include/classes.php:1155
+#: ../include/classes.php:1243
 msgid "An error occurred while saving the passkey."
 msgstr "Ett fel inträffade när lösenordsnyckeln skulle sparas"
 
-#: ../include/classes.php:1156
+#: ../include/classes.php:1244
 msgid "Please use only letters, numbers, spaces, hyphens, or underscores."
 msgstr "Använd endast bokstäver, mellanslag och bindestreck, tack."
 
-#: ../include/classes.php:1157
+#: ../include/classes.php:1245
 msgid "Passkey successfully added"
 msgstr "Lösenordsnyckeln lades till"
 
-#: ../include/classes.php:1158
+#: ../include/classes.php:1246
 msgid "No passkeys found"
 msgstr "Inga lösenordsnycklar hittades"
 

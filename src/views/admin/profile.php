@@ -47,6 +47,7 @@
 <?php
 							}
 ?>
+							<th>{{ i18n.device_column }}</th>
 							<th>{{ i18n.last_used_column }}</th>
 							<th>{{ i18n.created_at_column }}</th>
 							<th v-if="is_owner || has_access"></th>
@@ -67,6 +68,9 @@
 <?php
 							}
 ?>
+							<td :data-label="i18n.device_column">
+								{{ item.challenge_device }}
+							</td>
 							<td :data-label="i18n.last_used_column">
 								{{ item.last_used_at }}
 							</td>

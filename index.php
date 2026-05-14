@@ -3,7 +3,7 @@
 Plugin Name: MF Passkeys
 Plugin URI: https://github.com/frostkom/mf_passkeys
 Description: Enables passwordless authentication using WebAuthn
-Version: 1.4.14
+Version: 1.4.15
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -60,8 +60,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('wp_ajax_secure_passkeys_frontend_remove_passkey', [$obj_passkeys, 'remove_passkey'], 100);
 	}
 
-	//add_filter('filter_login_redirect', array($obj_passkeys, 'filter_login_redirect'), 11, 2);
-
 	function activate_passkeys()
 	{
 		global $wpdb, $obj_passkeys;
@@ -95,21 +93,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			'ip_address' => "ALTER TABLE [table] DROP COLUMN [column]", //260107
 		);
 
-		/*$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_logs (
-			id BIGINT(20) unsigned NOT NULL AUTO_INCREMENT,
-			user_id INT(11) NOT NULL,
-			blog_id INT(11) NOT NULL,
-			admin_id INT(11) DEFAULT NULL,
-			webauthn_id INT(11) DEFAULT NULL,
-			security_key_name VARCHAR(255) DEFAULT NULL,
-			aaguid CHAR(36) DEFAULT NULL,
-			log_type VARCHAR(255) NOT NULL,
-			created_at TIMESTAMP NULL DEFAULT NULL,
-			updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY user_id (user_id)
-		) DEFAULT CHARSET=".$default_charset);*/
-
 		$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."secure_passkeys_webauthns (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id INT(11) NOT NULL,
@@ -118,6 +101,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			security_key_name VARCHAR(255) NOT NULL,
 			public_key TEXT NOT NULL,
 			aaguid CHAR(36) NOT NULL,
+			challenge_device VARCHAR(255) NOT NULL,
 			last_used_at DATETIME DEFAULT NULL,
 			created_at TIMESTAMP NULL DEFAULT NULL,
 			updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -125,6 +109,10 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			UNIQUE KEY credential_id (credential_id),
 			KEY user_id (user_id)
 		) DEFAULT CHARSET=".$default_charset);
+
+		$arr_add_column[$wpdb->base_prefix."secure_passkeys_webauthns"] = array(
+			'challenge_device' => "ALTER TABLE [table] ADD [column] VARCHAR(255) NOT NULL AFTER aaguid", //260514
+		);
 
 		$arr_update_column[$wpdb->base_prefix."secure_passkeys_webauthns"] = array(
 			'is_active' => "ALTER TABLE [table] DROP COLUMN [column]", //260105

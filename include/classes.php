@@ -396,12 +396,7 @@ class mf_passkeys
 			throw new Exception();
 		}
 
-		$attestation = $webAuthn->processCreate(
-			$clientDataJSON,
-			new Byte_Buffer($attestationObject),
-			$challenge,
-			1, //$this->is_user_verification_required()
-		);
+		$attestation = $webAuthn->processCreate($clientDataJSON, new Byte_Buffer($attestationObject), $challenge, 1);
 
 		return [
 			'user_id' => $user_id,
@@ -673,25 +668,6 @@ class mf_passkeys
 		return SECURE_PASSKEYS_PLUGIN_URL.'assets/frontend/css/'.$file_name;
 	}
 
-	/*function add_record($log_type, $user_id, $security_key_name = null, $admin_id = null, $aaguid = null, $webauthn_id = null)
-	{
-		global $wpdb;
-
-		$wpdb->insert($wpdb->base_prefix."secure_passkeys_logs", [
-			'log_type' => $log_type,
-			'security_key_name' => $security_key_name,
-			'blog_id' => $wpdb->blogid,
-			'aaguid' => $aaguid,
-			'user_id' => $user_id,
-			'admin_id' => $admin_id,
-			'webauthn_id' => $webauthn_id,
-			'created_at' => current_time('mysql'),
-			'updated_at' => current_time('mysql')
-		]);
-
-		return ($wpdb->insert_id > 0);
-	}*/
-
 	function get_ajax_login_options()
 	{
 		$this->validate_frontend_ajax_request();
@@ -709,7 +685,8 @@ class mf_passkeys
 
 		return $wpdb->update($wpdb->base_prefix."secure_passkeys_webauthns", [
 			'blog_id' => $wpdb->blogid,
-			'last_used_at' => current_time('mysql')
+			'challenge_device' => $_SERVER['HTTP_USER_AGENT'],
+			'last_used_at' => current_time('mysql'),
 		],
 		['id' => $id]);
 	}
@@ -743,12 +720,15 @@ class mf_passkeys
 			wp_send_json_error(__("Passkey authentication failed. Please try again.", 'lang_passkeys'));
 		}
 
-		//$this->add_record('login', $data->user_id, $data->security_key_name, null, $data->aaguid, $data->id);
-
-		$redirect_to = $this->login_redirect_to();
+		$redirect_to = "";
 
 		$user_data = get_userdata($data->user_id);
 		$redirect_to = apply_filters('filter_login_redirect', $redirect_to, $user_data);
+
+		if($redirect_to == "")
+		{
+			$redirect_to = $this->login_redirect_to();
+		}
 
 		wp_send_json_success([
 			'redirect_url' => $redirect_to,
@@ -792,8 +772,6 @@ class mf_passkeys
 			$log_type = 'remove';
 		}
 
-		//$this->add_record($log_type, $record->user_id, $record->security_key_name, $admin_id, $record->aaguid);
-
 		wp_send_json_success(['message' => __("The passkey deleted successfully", 'lang_passkeys')]);
 	}
 
@@ -801,7 +779,124 @@ class mf_passkeys
 	{
 		global $wpdb;
 
-		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' ORDER BY created_at DESC", $user_id));
+		return $wpdb->get_results($wpdb->prepare("SELECT id, security_key_name, blog_id, challenge_device, aaguid, last_used_at, created_at FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' ORDER BY created_at DESC", $user_id));
+	}
+
+	function get_user_agent($ua)
+	{
+		if($ua == $_SERVER['HTTP_USER_AGENT'])
+		{
+			return __("This device", 'lang_passkeys');
+		}
+
+		else if($ua != '')
+		{
+			$ua = trim($ua);
+
+			// OS detection (common cases)
+			$os = 'Unknown OS';
+			if (stripos($ua, 'Windows NT 10.0') !== false) {
+				$os = 'Windows 10';
+			} elseif (stripos($ua, 'Windows NT 6.3') !== false) {
+				$os = 'Windows 8.1';
+			} elseif (stripos($ua, 'Windows NT 6.2') !== false) {
+				$os = 'Windows 8';
+			} elseif (stripos($ua, 'Windows NT 6.1') !== false) {
+				$os = 'Windows 7';
+			} elseif (stripos($ua, 'Windows NT 6.0') !== false) {
+				$os = 'Windows Vista';
+			} elseif (stripos($ua, 'Windows NT 5.1') !== false || stripos($ua, 'Windows XP') !== false) {
+				$os = 'Windows XP';
+			} elseif (preg_match('/Windows Phone(?: OS)?\s?([0-9._]+)/i', $ua, $m)) {
+				$os = 'Windows Phone ' . str_replace('_', '.', $m[1]);
+			} elseif (stripos($ua, 'Mac OS X') !== false || stripos($ua, 'Macintosh') !== false) {
+				if (preg_match('/Mac OS X\s*([0-9_\.]+)/i', $ua, $m)) {
+					$ver = str_replace('_', '.', $m[1]);
+					$os = 'macOS ' . $ver;
+				} else {
+					$os = 'macOS';
+				}
+			} elseif (stripos($ua, 'Android') !== false) {
+				if (preg_match('/Android\s*([0-9.]+)/i', $ua, $m)) {
+					$os = 'Android ' . $m[1];
+				} else {
+					$os = 'Android';
+				}
+			} elseif (stripos($ua, 'iPhone OS') !== false || stripos($ua, 'iPad; CPU OS') !== false || stripos($ua, 'iPad') !== false) {
+				if (preg_match('/(?:iPhone OS|CPU OS)\s*([0-9_]+)/i', $ua, $m)) {
+					$os = 'iOS ' . str_replace('_', '.', $m[1]);
+				} else {
+					$os = 'iOS';
+				}
+			} elseif (stripos($ua, 'Linux') !== false) {
+				$os = 'Linux';
+			}
+
+			// Browser detection and version (common browsers)
+			$browser = 'Unknown Browser';
+			$version = '';
+
+			// Edge (Chromium-based) / Edg/
+			if (preg_match('/\bEdgA?\/([0-9.]+)/i', $ua, $m) || preg_match('/\bEdge\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Edge';
+				$version = $m[1];
+			}
+			// Chrome (but exclude when it's actually Edge or Opera which include Chrome token)
+			elseif (preg_match('/\bOPR\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Opera';
+				$version = $m[1];
+			}
+			elseif (preg_match('/\bChrome\/([0-9.]+)/i', $ua, $m) && stripos($ua, 'Edg') === false && stripos($ua, 'OPR') === false && stripos($ua, 'Brave') === false) {
+				$browser = 'Chrome';
+				$version = $m[1];
+			}
+			// Firefox
+			elseif (preg_match('/\bFirefox\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Firefox';
+				$version = $m[1];
+			}
+			// Safari (ensure not Chrome)
+			elseif (stripos($ua, 'Safari') !== false && stripos($ua, 'Chrome') === false && stripos($ua, 'CriOS') === false && preg_match('/Version\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Safari';
+				$version = $m[1];
+			}
+			// Mobile Chrome on iOS (CriOS)
+			elseif (preg_match('/\bCriOS\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Chrome (iOS)';
+				$version = $m[1];
+			}
+			// Samsung Internet
+			elseif (preg_match('/\bSamsungBrowser\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Samsung Internet';
+				$version = $m[1];
+			}
+			// UC Browser
+			elseif (preg_match('/\bUCBrowser\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'UC Browser';
+				$version = $m[1];
+			}
+			// Brave (some UAs include "Brave" or present as Chrome—best-effort)
+			elseif (stripos($ua, 'Brave') !== false && preg_match('/\bChrome\/([0-9.]+)/i', $ua, $m)) {
+				$browser = 'Brave';
+				$version = $m[1];
+			}
+			// Fallback: pick first known token with version
+			else {
+				if (preg_match('/\b([A-Za-z]+)\/([0-9.]+)/', $ua, $m)) {
+					$browser = $m[1];
+					$version = $m[2];
+				}
+			}
+
+			$verText = $version !== '' ? ' v' . $version : '';
+
+			return $os . ' - ' . $browser . $verText;
+		}
+
+		else
+		{
+			return "";
+		}
 	}
 
 	function get_profile_registered_passkeys_list()
@@ -817,6 +912,7 @@ class mf_passkeys
 		array_map(function($record)
 		{
 			$record->blog_name = (is_multisite() ? get_blog_option($record->blog_id, 'blogname') : __("This Site", 'lang_passkeys'));
+			$record->challenge_device = $this->get_user_agent($record->challenge_device);
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
 		}, $records);
@@ -835,6 +931,7 @@ class mf_passkeys
 		array_map(function ($record)
 		{
 			$record->blog_name = get_blog_option($record->blog_id, 'blogname');
+			$record->challenge_device = $record->challenge_device;
 			$record->last_used_at = format_date($record->last_used_at);
 			$record->created_at = format_date($record->created_at);
 		}, $records);
@@ -895,6 +992,7 @@ class mf_passkeys
 			$data_temp = array_merge($data, [
 				'security_key_name' => $security_key_name,
 				'blog_id' => $wpdb->blogid,
+				'challenge_device' => $_SERVER['HTTP_USER_AGENT'],
 				'created_at' => current_time('mysql'),
 				'updated_at' => current_time('mysql')
 			]);
@@ -909,8 +1007,6 @@ class mf_passkeys
 		}
 
 		$this->mark_as_used_challenge($challenge);
-
-		//$this->add_record('register', $user_id, $security_key_name, null, $data['aaguid'], $webauthn_id);
 
 		wp_send_json_success([]);
 	}
@@ -948,8 +1044,6 @@ class mf_passkeys
 			wp_send_json_error(__("You do not have permission to remove this passkey.", 'lang_passkeys'));
 		}
 
-		//$this->add_record('remove', $user_id, $passkey->security_key_name, null, $passkey->aaguid);
-
 		wp_send_json_success([]);
 	}
 
@@ -968,7 +1062,6 @@ class mf_passkeys
 		if($obj_cron->is_running == false)
 		{
 			$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_challenges WHERE DATEDIFF(NOW(), created_at) >= '%d'", 30));
-			//$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."secure_passkeys_logs WHERE DATEDIFF(NOW(), created_at) >= '%d'", 30));
 
 			mf_uninstall_plugin(array(
 				'options' => array('registration_maximum_passkeys_enabled', 'registration_maximum_passkeys_per_user', 'excluded_roles_registration_login', 'auto_generate_security_key_name', 'display_passkey_theme', 'display_passkey_login_wp_enabled', 'display_passkey_edit_user_enabled', 'show_enable_passkeys_notice', 'display_passkey_login_woocommerce_enabled', 'display_passkey_login_memberpress_enabled', 'display_passkey_login_edd_enabled', 'display_passkey_login_ultimate_member_enabled', 'display_passkey_users_list_enabled', 'registration_exclude_credentials_enabled', 'registration_timeout', 'registration_user_verification_enabled', 'login_timeout', 'login_user_verification', 'challenge_cleanup_days', 'log_cleanup_days'),
@@ -1115,6 +1208,7 @@ class mf_passkeys
 				'passkey_label' => __("Passwordless sign-in with passkeys", 'lang_passkeys'),
 				'description' => __("Passkeys offer a secure and user-friendly authentication method, serving as an alternative or complement to traditional methods. They validate your identity through touch, facial recognition, device passwords, or PINs, and can effectively replace passwords.", 'lang_passkeys'),
 				'domain_column' => __("Domain", 'lang_passkeys'),
+				'device_column' => __("Device", 'lang_passkeys'),
 				'last_used_column' => __("Last Used", 'lang_passkeys'),
 				'created_at_column' => __("Created Date", 'lang_passkeys'),
 				'activate' => __("Activate", 'lang_passkeys'),
@@ -1163,26 +1257,4 @@ class mf_passkeys
 			<passkey-list></passkey-list>
 		</div>";
 	}
-
-	/*function filter_login_redirect($redirect_to, $user_data)
-	{
-		global $wpdb;
-
-		if(isset($user_data->ID))
-		{
-			$wpdb->get_results($wpdb->prepare("SELECT user_id FROM ".$wpdb->base_prefix."secure_passkeys_webauthns WHERE user_id = '%d' AND blog_id = '%d' LIMIT 0, 1", $user_data->ID, $wpdb->blogid));
-
-			if($wpdb->num_rows == 0)
-			{
-				$redirect_to = admin_url("profile.php#passkey-app");
-			}
-		}
-
-		else
-		{
-			do_log(__FUNCTION__.": No ID for user (".var_export($user_data, true).")");
-		}
-
-		return $redirect_to;
-	}*/
 }
