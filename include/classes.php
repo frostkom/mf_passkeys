@@ -685,7 +685,7 @@ class mf_passkeys
 
 		return $wpdb->update($wpdb->base_prefix."secure_passkeys_webauthns", [
 			'blog_id' => $wpdb->blogid,
-			'challenge_device' => $_SERVER['HTTP_USER_AGENT'],
+			'challenge_device' => wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''),
 			'last_used_at' => current_time('mysql'),
 		],
 		['id' => $id]);
@@ -784,7 +784,7 @@ class mf_passkeys
 
 	function get_user_agent($ua)
 	{
-		if($ua == $_SERVER['HTTP_USER_AGENT'])
+		if($ua == wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''))
 		{
 			return __("This device", 'lang_passkeys');
 		}
@@ -992,7 +992,7 @@ class mf_passkeys
 			$data_temp = array_merge($data, [
 				'security_key_name' => $security_key_name,
 				'blog_id' => $wpdb->blogid,
-				'challenge_device' => $_SERVER['HTTP_USER_AGENT'],
+				'challenge_device' => wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''),
 				'created_at' => current_time('mysql'),
 				'updated_at' => current_time('mysql')
 			]);
