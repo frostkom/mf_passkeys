@@ -23,10 +23,6 @@
 			{{ i18n.add_passkey_button }}
 		</template>
 		<template v-else>
-			<span
-			class="dashicons dashicons-plus"
-			style="vertical-align: middle"
-			></span>
 			{{ i18n.add_passkey_button }}
 		</template>
 	</button>

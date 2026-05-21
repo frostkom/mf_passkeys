@@ -8,18 +8,6 @@
 		padding: .8em 1em;
 	}
 
-/*.secure-passkeys .label.label-last-used-on
-{
-	background: #1bd288;
-	display: block;
-	padding: 0;
-}*/
-
-/*.secure-passkeys .button .dashicons
-{
-	vertical-align: middle;
-}*/
-
 .secure-passkeys .button.button-cancel
 {
 	color: #b12222;
@@ -27,13 +15,10 @@
 	background: #fff6f6;
 }
 
-.secure-passkeys .button.add {
-	margin-bottom: 1em;
+.secure-passkeys .button.add
+{
+	margin: 0 1em 1em 0;
 }
-
-/*.secure-passkeys .input-wrapper {
-	margin-top: 1.5em;
-}*/
 
 .secure-passkeys .description {
 	padding: 1em;
