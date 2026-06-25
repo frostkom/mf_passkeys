@@ -154,7 +154,12 @@ document.addEventListener("DOMContentLoaded", function()
 				successMessage.querySelector("div > p").textContent = secure_passkeys_object.i18n.success_login;
 				successMessage.style.display = "block";
 
-				if(data.data.redirect_url)
+				if(secure_passkeys_object.redirect_to != '')
+				{
+					window.location.href = secure_passkeys_object.redirect_to;
+				}
+
+				else if(data.data.redirect_url)
 				{
 					window.location.href = data.data.redirect_url;
 				}

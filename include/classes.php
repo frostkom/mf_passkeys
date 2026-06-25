@@ -597,10 +597,13 @@ class mf_passkeys
 				$file = $this->get_js_frontend_assets_url('webauthn.login.js');
 				$version = get_source_version($file);
 
+				$redirect_to = check_var('redirect_to');
+
 				wp_register_script('secure-passkeys-login-script', $file, [], $version, true);
 				wp_localize_script('secure-passkeys-login-script', 'secure_passkeys_object', [
 					'url' => admin_url('admin-ajax.php'),
 					'nonce' => wp_create_nonce(SECURE_PASSKEYS_NONCE),
+					'redirect_to' => $redirect_to,
 					'i18n' => [
 						'passkeys_not_supported_in_browser' => __("Your browser does not support passkeys. Try updating your browser or using another one.", 'lang_passkeys'),
 						'failed_load_options' => __("Failed to fetch passkey login options.", 'lang_passkeys'),
