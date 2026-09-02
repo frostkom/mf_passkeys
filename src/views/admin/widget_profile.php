@@ -1,4 +1,4 @@
-<div class="secure-passkeys">
+<div class="secure-passkeys wp-block-button">
 	<div v-if="errorMessage" class="error">
 		<p>{{ errorMessage }}</p>
 	</div>
